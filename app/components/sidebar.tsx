@@ -7,6 +7,8 @@ const navItems = [
   { label: 'Dashboard', href: '/dashboard', icon: '📊' },
   { label: 'Students', href: '/students', icon: '👨‍🎓' },
   { label: 'Classes', href: '/classes', icon: '🏫' },
+  { label: 'Teachers', href: '/teachers', icon: '👩‍🏫' },
+  { label: 'Promotion', href: '/promotion', icon: '🎓' },
   { label: 'Fees', href: '/fees', icon: '💰' },
   { label: 'Report Cards', href: '/report-cards', icon: '📄' },
 ]
