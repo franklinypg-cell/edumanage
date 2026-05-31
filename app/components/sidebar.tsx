@@ -22,11 +22,11 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="w-56 min-h-screen bg-white border-r border-gray-200 flex flex-col fixed left-0 top-0">
+    <div className="w-56 min-h-screen flex flex-col fixed left-0 top-0" style={{ background: '#0f172a', borderRight: '1px solid #1e293b' }}>
       {/* Logo */}
-      <div className="px-6 py-5 border-b border-gray-100">
-        <h1 className="text-lg font-bold text-blue-600">EduManage</h1>
-        <p className="text-xs text-gray-400 mt-0.5">School Admin</p>
+      <div className="px-6 py-5" style={{ borderBottom: '1px solid #1e293b' }}>
+        <h1 className="text-base font-bold" style={{ color: '#38bdf8' }}>Frankies EduTech</h1>
+        <p className="text-xs mt-0.5" style={{ color: '#475569' }}>School Admin</p>
       </div>
 
       {/* Nav Items */}
@@ -35,11 +35,24 @@ export default function Sidebar() {
           <Link
             key={item.href}
             href={item.href}
-            className={`flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition ${
+            className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition"
+            style={
               pathname.startsWith(item.href)
-                ? 'bg-blue-50 text-blue-600 font-medium'
-                : 'text-gray-600 hover:bg-gray-50'
-            }`}
+                ? { background: '#1e293b', color: '#38bdf8', fontWeight: 500 }
+                : { color: '#94a3b8' }
+            }
+            onMouseEnter={e => {
+              if (!pathname.startsWith(item.href)) {
+                (e.currentTarget as HTMLElement).style.background = '#1e293b'
+                ;(e.currentTarget as HTMLElement).style.color = '#cbd5e1'
+              }
+            }}
+            onMouseLeave={e => {
+              if (!pathname.startsWith(item.href)) {
+                (e.currentTarget as HTMLElement).style.background = 'transparent'
+                ;(e.currentTarget as HTMLElement).style.color = '#94a3b8'
+              }
+            }}
           >
             <span>{item.icon}</span>
             {item.label}
@@ -48,10 +61,19 @@ export default function Sidebar() {
       </nav>
 
       {/* Sign Out */}
-      <div className="px-3 py-4 border-t border-gray-100">
+      <div className="px-3 py-4" style={{ borderTop: '1px solid #1e293b' }}>
         <button
           onClick={handleLogout}
-          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm text-gray-500 hover:bg-red-50 hover:text-red-500 transition w-full"
+          className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition w-full"
+          style={{ color: '#64748b' }}
+          onMouseEnter={e => {
+            (e.currentTarget as HTMLElement).style.background = '#1e293b'
+            ;(e.currentTarget as HTMLElement).style.color = '#f87171'
+          }}
+          onMouseLeave={e => {
+            (e.currentTarget as HTMLElement).style.background = 'transparent'
+            ;(e.currentTarget as HTMLElement).style.color = '#64748b'
+          }}
         >
           <span>🚪</span>
           Sign Out
