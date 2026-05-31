@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 import Link from 'next/link'
+import Sidebar from '../../components/sidebar'
 
 type Stream = {
   id: string
@@ -33,12 +34,11 @@ export default function NewStudentPage() {
   }, [])
 
   const fetchStreams = async () => {
-    const { data } = await supabase
-      .from('streams')
-      .select('id, label, class_id, classes(name)')
-      .order('class_id')
-    if (data) setStreams(data as any)
-  }
+  const { data } = await supabase
+    .from('streams')
+    .select('id, label, class_id, classes(name)')
+  if (data) setStreams(data as any)
+}
 
   const generateLearnerCode = async () => {
     const year = new Date().getFullYear()
@@ -71,41 +71,34 @@ export default function NewStudentPage() {
     setForm(prev => ({ ...prev, [field]: value }))
 
   if (success) return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white rounded-xl border border-gray-200 p-8 text-center max-w-md w-full">
-        <div className="text-green-500 text-4xl mb-4">✓</div>
-        <h2 className="text-xl font-semibold text-gray-800 mb-2">Student Enrolled</h2>
-        <p className="text-gray-500 text-sm mb-6">The student has been successfully added to the system.</p>
-        <div className="flex gap-3 justify-center">
-          <Link href="/students/new" onClick={() => setSuccess(false)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
-            Add Another
-          </Link>
-          <Link href="/students"
-            className="border border-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
-            View All Students
-          </Link>
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="ml-56 flex-1 flex items-center justify-center">
+        <div className="bg-white rounded-xl border border-gray-200 p-8 text-center max-w-md w-full">
+          <div className="text-green-500 text-4xl mb-4">✓</div>
+          <h2 className="text-xl font-semibold text-gray-800 mb-2">Student Enrolled</h2>
+          <p className="text-gray-500 text-sm mb-6">The student has been successfully added to the system.</p>
+          <div className="flex gap-3 justify-center">
+            <button onClick={() => { setSuccess(false); setForm({ full_name: '', date_of_birth: '', gender: '', stream_id: '', guardian_name: '', guardian_phone: '' }) }}
+              className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition">
+              Add Another
+            </button>
+            <Link href="/students"
+              className="border border-gray-200 text-gray-600 px-4 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition">
+              View All Students
+            </Link>
+          </div>
         </div>
       </div>
     </div>
   )
 
   return (
-    <div className="min-h-screen bg-gray-50">
-      {/* Header */}
-      <div className="bg-white border-b border-gray-200 px-8 py-4 flex justify-between items-center">
-        <div className="flex items-center gap-6">
-          <Link href="/dashboard" className="text-xl font-semibold text-gray-800">EduManage</Link>
-          <Link href="/students" className="text-sm text-gray-500 hover:text-blue-600">Students</Link>
-          <span className="text-sm text-blue-600 font-medium">New Student</span>
-        </div>
-      </div>
-
-      {/* Form */}
-      <div className="p-8 max-w-2xl mx-auto">
+    <div className="flex min-h-screen bg-gray-50">
+      <Sidebar />
+      <div className="ml-56 flex-1 p-8">
         <h2 className="text-lg font-medium text-gray-700 mb-6">Enrol New Student</h2>
-        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5">
-          
+        <form onSubmit={handleSubmit} className="bg-white rounded-xl border border-gray-200 p-6 space-y-5 max-w-2xl">
           <div>
             <label className="text-sm text-gray-600 block mb-1">Full Name <span className="text-red-400">*</span></label>
             <input
