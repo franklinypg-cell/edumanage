@@ -20,10 +20,7 @@ export default function ReportCardsPage() {
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) window.location.href = '/'
-      else {
-        fetchStudents()
-        fetchReportCards()
-      }
+      else { fetchStudents(); fetchReportCards() }
     }
     checkSession()
   }, [])
@@ -56,11 +53,11 @@ export default function ReportCardsPage() {
       .upload(fileName, file)
 
     if (uploadError) {
-  console.log('Upload error:', JSON.stringify(uploadError))
-  alert('Error uploading file. Please try again.')
-  setUploading(false)
-  return
-}
+      console.log('Upload error:', JSON.stringify(uploadError))
+      alert('Error uploading file. Please try again.')
+      setUploading(false)
+      return
+    }
 
     const { data: urlData } = supabase.storage
       .from('report-cards')
@@ -87,99 +84,79 @@ export default function ReportCardsPage() {
   const update = (field: string, value: string) =>
     setForm(prev => ({ ...prev, [field]: value }))
 
+  const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
+
   if (loading) return (
-    <div className="flex min-h-screen">
+    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
       <Sidebar />
       <div className="ml-56 flex-1 flex items-center justify-center">
-        <p className="text-gray-500">Loading...</p>
+        <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
       <Sidebar />
       <div className="ml-56 flex-1 p-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-medium text-gray-700">Report Cards</h2>
+          <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Report Cards</h2>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="bg-blue-600 text-white px-4 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition"
+            style={{ background: '#38bdf8', color: '#0f172a' }}
           >
             + Upload Report Card
           </button>
         </div>
 
         {showForm && (
-          <form onSubmit={handleUpload} className="bg-white rounded-xl border border-gray-200 p-6 mb-6 max-w-2xl">
-            <h3 className="text-sm font-medium text-gray-700 mb-4">Upload Report Card</h3>
+          <form onSubmit={handleUpload} className="rounded-xl p-6 mb-6 max-w-2xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+            <h3 className="text-sm font-medium mb-4" style={{ color: '#e2e8f0' }}>Upload Report Card</h3>
             <div className="space-y-4">
               <div>
-                <label className="text-sm text-gray-600 block mb-1">Student <span className="text-red-400">*</span></label>
-                <select
-                  value={form.student_id}
-                  onChange={e => update('student_id', e.target.value)}
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
-                  required
-                >
+                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Student <span style={{ color: '#f87171' }}>*</span></label>
+                <select value={form.student_id} onChange={e => update('student_id', e.target.value)}
+                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle} required>
                   <option value="">Select student</option>
                   {students.map(s => (
-                    <option key={s.id} value={s.id}>
-                      {s.full_name} — {s.learner_code}
-                    </option>
+                    <option key={s.id} value={s.id}>{s.full_name} — {s.learner_code}</option>
                   ))}
                 </select>
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm text-gray-600 block mb-1">Term</label>
-                  <select
-                    value={form.term}
-                    onChange={e => update('term', e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
-                  >
+                  <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Term</label>
+                  <select value={form.term} onChange={e => update('term', e.target.value)}
+                    className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle}>
                     <option value="Term 1">Term 1</option>
                     <option value="Term 2">Term 2</option>
                     <option value="Term 3">Term 3</option>
                   </select>
                 </div>
                 <div>
-                  <label className="text-sm text-gray-600 block mb-1">Academic Year</label>
-                  <input
-                    type="text"
-                    value={form.academic_year}
-                    onChange={e => update('academic_year', e.target.value)}
-                    className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
-                    placeholder="2025/2026"
-                  />
+                  <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Academic Year</label>
+                  <input type="text" value={form.academic_year} onChange={e => update('academic_year', e.target.value)}
+                    className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle} placeholder="2025/2026" />
                 </div>
               </div>
 
               <div>
-                <label className="text-sm text-gray-600 block mb-1">PDF File <span className="text-red-400">*</span></label>
-                <input
-                  type="file"
-                  accept=".pdf"
-                  onChange={e => setFile(e.target.files?.[0] || null)}
-                  className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
-                  required
-                />
+                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>PDF File <span style={{ color: '#f87171' }}>*</span></label>
+                <input type="file" accept=".pdf" onChange={e => setFile(e.target.files?.[0] || null)}
+                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle} required />
               </div>
 
               <div className="flex gap-3 pt-2">
-                <button
-                  type="submit"
-                  disabled={uploading}
-                  className="bg-blue-600 text-white px-6 py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
-                >
+                <button type="submit" disabled={uploading}
+                  className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
+                  style={{ background: '#38bdf8', color: '#0f172a' }}>
                   {uploading ? 'Uploading...' : 'Upload'}
                 </button>
-                <button
-                  type="button"
-                  onClick={() => setShowForm(false)}
-                  className="border border-gray-200 text-gray-600 px-6 py-2 rounded-lg text-sm font-medium hover:bg-gray-50 transition"
-                >
+                <button type="button" onClick={() => setShowForm(false)}
+                  className="px-6 py-2 rounded-lg text-sm font-medium transition"
+                  style={{ border: '1px solid #334155', color: '#94a3b8' }}>
                   Cancel
                 </button>
               </div>
@@ -187,41 +164,39 @@ export default function ReportCardsPage() {
           </form>
         )}
 
-        <div className="bg-white rounded-xl border border-gray-200 overflow-hidden">
+        <div className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-gray-100">
-                <th className="text-left px-6 py-3 text-gray-500 font-medium">Student</th>
-                <th className="text-left px-6 py-3 text-gray-500 font-medium">Term</th>
-                <th className="text-left px-6 py-3 text-gray-500 font-medium">Academic Year</th>
-                <th className="text-left px-6 py-3 text-gray-500 font-medium">Uploaded</th>
-                <th className="text-left px-6 py-3 text-gray-500 font-medium">Action</th>
+              <tr style={{ borderBottom: '1px solid #334155' }}>
+                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
+                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Term</th>
+                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Academic Year</th>
+                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Uploaded</th>
+                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Action</th>
               </tr>
             </thead>
             <tbody>
               {reportCards.length === 0 ? (
                 <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center text-gray-400">
+                  <td colSpan={5} className="px-6 py-8 text-center" style={{ color: '#475569' }}>
                     No report cards uploaded yet. Click + Upload Report Card to add one.
                   </td>
                 </tr>
               ) : (
                 reportCards.map(rc => (
-                  <tr key={rc.id} className="border-b border-gray-50 hover:bg-gray-50">
+                  <tr key={rc.id} className="transition" style={{ borderBottom: '1px solid #1e293b' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
                     <td className="px-6 py-4">
-                      <div className="font-medium text-gray-800">{(rc.students as any)?.full_name}</div>
-                      <div className="text-xs text-gray-400">{(rc.students as any)?.learner_code}</div>
+                      <div className="font-medium" style={{ color: '#e2e8f0' }}>{(rc.students as any)?.full_name}</div>
+                      <div className="text-xs" style={{ color: '#475569' }}>{(rc.students as any)?.learner_code}</div>
                     </td>
-                    <td className="px-6 py-4 text-gray-600">{rc.term}</td>
-                    <td className="px-6 py-4 text-gray-600">{rc.academic_year}</td>
-                    <td className="px-6 py-4 text-gray-600">{new Date(rc.uploaded_at).toLocaleDateString()}</td>
+                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{rc.term}</td>
+                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{rc.academic_year}</td>
+                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{new Date(rc.uploaded_at).toLocaleDateString()}</td>
                     <td className="px-6 py-4">
-                      <a
-                        href={rc.file_url}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-blue-600 hover:underline text-sm"
-                      >
+                      <a href={rc.file_url} target="_blank" rel="noopener noreferrer"
+                        className="text-sm hover:underline" style={{ color: '#38bdf8' }}>
                         View PDF
                       </a>
                     </td>

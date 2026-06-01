@@ -45,9 +45,7 @@ export default function PromotionPage() {
   const handleClassChange = async (className: string) => {
     setSelectedClass(className)
     setDone(false)
-    const suggested = promotionMap[className] || ''
-    setTargetClass(suggested)
-
+    setTargetClass(promotionMap[className] || '')
     setLoading(true)
     const { data } = await supabase
       .from('students')
@@ -71,36 +69,22 @@ export default function PromotionPage() {
   }
 
   const toggleAll = () => {
-    if (selected.size === students.length) {
-      setSelected(new Set())
-    } else {
-      setSelected(new Set(students.map(s => s.id)))
-    }
+    if (selected.size === students.length) setSelected(new Set())
+    else setSelected(new Set(students.map(s => s.id)))
   }
 
   const handlePromote = async () => {
     if (!targetClass) return alert('Please select a destination class.')
     if (selected.size === 0) return alert('No students selected.')
     setPromoting(true)
-
     const toPromote = students.filter(s => selected.has(s.id))
-
-    if (targetClass === 'graduated') {
-      for (const s of toPromote) {
-        await supabase
-          .from('students')
-          .update({ status: 'graduated', class: 'Graduated' })
-          .eq('id', s.id)
-      }
-    } else {
-      for (const s of toPromote) {
-        await supabase
-          .from('students')
-          .update({ class: targetClass })
-          .eq('id', s.id)
-      }
+    for (const s of toPromote) {
+      await supabase.from('students').update(
+        targetClass === 'graduated'
+          ? { status: 'graduated', class: 'Graduated' }
+          : { class: targetClass }
+      ).eq('id', s.id)
     }
-
     setPromoting(false)
     setDone(true)
     setStudents([])
@@ -108,93 +92,86 @@ export default function PromotionPage() {
     setSelectedClass('')
   }
 
+  const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
+
   return (
-    <div className="flex min-h-screen bg-gray-50">
+    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
       <Sidebar />
       <div className="ml-56 flex-1 p-8">
         <div className="mb-6">
-          <h2 className="text-lg font-medium text-gray-700">Student Promotion</h2>
-          <p className="text-sm text-gray-400 mt-1">Promote students to the next class at the end of term.</p>
+          <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Student Promotion</h2>
+          <p className="text-sm mt-1" style={{ color: '#475569' }}>Promote students to the next class at the end of the academic year.</p>
         </div>
 
         {done && (
-          <div className="bg-green-50 border border-green-200 text-green-700 rounded-xl px-6 py-4 mb-6 text-sm">
+          <div className="rounded-xl px-6 py-4 mb-6 text-sm" style={{ background: '#052e16', border: '1px solid #166534', color: '#4ade80' }}>
             ✅ Promotion complete! Students have been moved successfully.
           </div>
         )}
 
-        <div className="bg-white rounded-xl border border-gray-200 p-6 mb-6 max-w-2xl">
-          <div className="grid grid-cols-2 gap-4 mb-4">
+        <div className="rounded-xl p-6 mb-6 max-w-2xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+          <div className="grid grid-cols-2 gap-4">
             <div>
-              <label className="text-sm text-gray-600 block mb-1">From Class</label>
-              <select
-                value={selectedClass}
-                onChange={e => handleClassChange(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
-              >
+              <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>From Class</label>
+              <select value={selectedClass} onChange={e => handleClassChange(e.target.value)}
+                className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle}>
                 <option value="">Select class</option>
-                {classes.map(c => (
-                  <option key={c.id} value={c.name}>{c.name}</option>
-                ))}
+                {classes.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
               </select>
             </div>
             <div>
-              <label className="text-sm text-gray-600 block mb-1">To Class</label>
-              <select
-                value={targetClass}
-                onChange={e => setTargetClass(e.target.value)}
-                className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
-              >
+              <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>To Class</label>
+              <select value={targetClass} onChange={e => setTargetClass(e.target.value)}
+                className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle}>
                 <option value="">Select destination</option>
-                {classes.map(c => (
-                  <option key={c.id} value={c.name}>{c.name}</option>
-                ))}
+                {classes.map(c => <option key={c.id} value={c.name}>{c.name}</option>)}
                 <option value="graduated">Graduated (JHS 3)</option>
               </select>
             </div>
           </div>
         </div>
 
-        {loading && <p className="text-sm text-gray-400">Loading students...</p>}
+        {loading && <p className="text-sm mb-4" style={{ color: '#475569' }}>Loading students...</p>}
 
         {students.length > 0 && (
           <>
-            <div className="bg-white rounded-xl border border-gray-200 overflow-hidden mb-4">
-              <div className="px-6 py-3 border-b border-gray-100 flex justify-between items-center">
-                <span className="text-sm text-gray-600">{students.length} active students — {selected.size} selected for promotion</span>
-                <button
-                  onClick={toggleAll}
-                  className="text-sm text-blue-600 hover:underline"
-                >
+            <div className="rounded-xl overflow-hidden mb-4" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+              <div className="px-6 py-3 flex justify-between items-center" style={{ borderBottom: '1px solid #334155' }}>
+                <span className="text-sm" style={{ color: '#64748b' }}>
+                  {students.length} students — {selected.size} selected for promotion
+                </span>
+                <button onClick={toggleAll} className="text-sm hover:underline" style={{ color: '#38bdf8' }}>
                   {selected.size === students.length ? 'Deselect All' : 'Select All'}
                 </button>
               </div>
               <table className="w-full text-sm">
                 <thead>
-                  <tr className="border-b border-gray-100">
+                  <tr style={{ borderBottom: '1px solid #334155' }}>
                     <th className="px-6 py-3 w-10"></th>
-                    <th className="text-left px-6 py-3 text-gray-500 font-medium">Student</th>
-                    <th className="text-left px-6 py-3 text-gray-500 font-medium">Learner Code</th>
-                    <th className="text-left px-6 py-3 text-gray-500 font-medium">Gender</th>
-                    <th className="text-left px-6 py-3 text-gray-500 font-medium">Action</th>
+                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
+                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Learner Code</th>
+                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Gender</th>
+                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Status</th>
                   </tr>
                 </thead>
                 <tbody>
                   {students.map(s => (
-                    <tr key={s.id} className={`border-b border-gray-50 ${selected.has(s.id) ? 'bg-blue-50' : 'hover:bg-gray-50'}`}>
+                    <tr key={s.id} className="transition" style={{
+                      borderBottom: '1px solid #1e293b',
+                      background: selected.has(s.id) ? '#0f2744' : 'transparent'
+                    }}>
                       <td className="px-6 py-4">
-                        <input
-                          type="checkbox"
-                          checked={selected.has(s.id)}
-                          onChange={() => toggleStudent(s.id)}
-                          className="rounded"
-                        />
+                        <input type="checkbox" checked={selected.has(s.id)}
+                          onChange={() => toggleStudent(s.id)} className="rounded" />
                       </td>
-                      <td className="px-6 py-4 font-medium text-gray-800">{s.full_name}</td>
-                      <td className="px-6 py-4 text-gray-500">{s.learner_code}</td>
-                      <td className="px-6 py-4 text-gray-500">{s.gender}</td>
-                      <td className="px-6 py-4 text-xs text-gray-400">
-                        {selected.has(s.id) ? '→ ' + targetClass : 'Staying in ' + selectedClass}
+                      <td className="px-6 py-4 font-medium" style={{ color: '#e2e8f0' }}>{s.full_name}</td>
+                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.learner_code}</td>
+                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.gender}</td>
+                      <td className="px-6 py-4 text-xs">
+                        {selected.has(s.id)
+                          ? <span style={{ color: '#38bdf8' }}>→ {targetClass || '...'}</span>
+                          : <span style={{ color: '#f97316' }}>Staying in {selectedClass}</span>
+                        }
                       </td>
                     </tr>
                   ))}
@@ -202,12 +179,10 @@ export default function PromotionPage() {
               </table>
             </div>
 
-            <button
-              onClick={handlePromote}
-              disabled={promoting || selected.size === 0}
-              className="bg-blue-600 text-white px-8 py-2.5 rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
-            >
-              {promoting ? 'Promoting...' : `Promote ${selected.size} Student${selected.size !== 1 ? 's' : ''}`}
+            <button onClick={handlePromote} disabled={promoting || selected.size === 0}
+              className="px-8 py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-50"
+              style={{ background: '#38bdf8', color: '#0f172a' }}>
+              {promoting ? 'Promoting...' : `Promote ${selected.size} Student${selected.size !== 1 ? 's' : ''} →`}
             </button>
           </>
         )}
