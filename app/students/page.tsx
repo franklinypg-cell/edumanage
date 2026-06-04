@@ -32,6 +32,16 @@ export default function StudentsPage() {
     s.learner_code.toLowerCase().includes(search.toLowerCase())
   )
 
+  // Group filtered students by class
+  const grouped = filtered.reduce((acc: any, student) => {
+    const className = student.class || 'Unassigned'
+    if (!acc[className]) acc[className] = []
+    acc[className].push(student)
+    return acc
+  }, {})
+
+  const sortedClasses = Object.keys(grouped).sort()
+
   if (loading) return (
     <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
       <Sidebar />
@@ -68,55 +78,65 @@ export default function StudentsPage() {
           </div>
         </div>
 
-        <div className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: '1px solid #334155' }}>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Code</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Name</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Class</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Gender</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Guardian</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Status</th>
-              </tr>
-            </thead>
-            <tbody>
-              {filtered.length === 0 ? (
-                <tr>
-                  <td colSpan={6} className="px-6 py-8 text-center" style={{ color: '#475569' }}>
-                    No students found. Click + Add Student to enrol your first student.
-                  </td>
-                </tr>
-              ) : (
-                filtered.map(student => (
-                  <tr
-                    key={student.id}
-                    onClick={() => window.location.href = `/students/${student.id}`}
-                    className="cursor-pointer transition"
-                    style={{ borderBottom: '1px solid #1e293b' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
-                  >
-                    <td className="px-6 py-4 font-mono" style={{ color: '#38bdf8' }}>{student.learner_code}</td>
-                    <td className="px-6 py-4 font-medium" style={{ color: '#e2e8f0' }}>{student.full_name}</td>
-                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{student.class || '—'}</td>
-                    <td className="px-6 py-4 capitalize" style={{ color: '#94a3b8' }}>{student.gender}</td>
-                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{student.guardian_name}</td>
-                    <td className="px-6 py-4">
-                      <span className="px-2 py-1 rounded-full text-xs font-medium" style={
-                        student.status === 'active'
-                          ? { background: '#052e16', color: '#4ade80' }
-                          : { background: '#2d1b1b', color: '#f87171' }
-                      }>
-                        {student.status}
-                      </span>
-                    </td>
-                  </tr>
-                ))
-              )}
-            </tbody>
-          </table>
-        </div>
+        {filtered.length === 0 ? (
+          <div className="rounded-xl p-8 text-center" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+            <p style={{ color: '#475569' }}>
+              {search ? 'No students match your search.' : 'No students found. Click + Add Student to enrol your first student.'}
+            </p>
+          </div>
+        ) : (
+          <div className="space-y-6">
+            {sortedClasses.map(className => (
+              <div key={className} className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+                {/* Class Header */}
+                <div className="px-6 py-3 flex items-center gap-3" style={{ background: '#0f172a', borderBottom: '1px solid #334155' }}>
+                  <span className="text-sm font-semibold" style={{ color: '#38bdf8' }}>{className}</span>
+                  <span className="text-xs" style={{ color: '#475569' }}>
+                    {grouped[className].length} student{grouped[className].length !== 1 ? 's' : ''}
+                  </span>
+                </div>
+                {/* Table */}
+                <table className="w-full text-sm">
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #334155' }}>
+                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Code</th>
+                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Name</th>
+                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Gender</th>
+                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Guardian</th>
+                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    {grouped[className].map((student: any) => (
+                      <tr
+                        key={student.id}
+                        onClick={() => window.location.href = `/students/${student.id}`}
+                        className="cursor-pointer transition"
+                        style={{ borderBottom: '1px solid #1e293b' }}
+                        onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                        onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                      >
+                        <td className="px-6 py-4 font-mono" style={{ color: '#38bdf8' }}>{student.learner_code}</td>
+                        <td className="px-6 py-4 font-medium" style={{ color: '#e2e8f0' }}>{student.full_name}</td>
+                        <td className="px-6 py-4 capitalize" style={{ color: '#94a3b8' }}>{student.gender}</td>
+                        <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{student.guardian_name}</td>
+                        <td className="px-6 py-4">
+                          <span className="px-2 py-1 rounded-full text-xs font-medium" style={
+                            student.status === 'active'
+                              ? { background: '#052e16', color: '#4ade80' }
+                              : { background: '#2d1b1b', color: '#f87171' }
+                          }>
+                            {student.status}
+                          </span>
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   )
