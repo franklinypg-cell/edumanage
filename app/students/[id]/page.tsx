@@ -69,45 +69,45 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
   }, {})
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen bg-indigo-50/40">
       <Sidebar />
       <div className="ml-56 flex-1 flex items-center justify-center">
-        <p style={{ color: '#475569' }}>Loading...</p>
+        <p style={{ color: '#6366f1' }}>Loading...</p>
       </div>
     </div>
   )
 
   if (!student) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen bg-indigo-50/40">
       <Sidebar />
       <div className="ml-56 flex-1 flex items-center justify-center">
-        <p style={{ color: '#475569' }}>Student not found.</p>
+        <p style={{ color: '#64748b' }}>Student not found.</p>
       </div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen bg-indigo-50/40">
       <Sidebar />
       <div className="ml-56 flex-1 p-8 overflow-auto">
-        <Link href="/students" className="text-sm mb-6 block" style={{ color: '#38bdf8' }}>
+        <Link href="/students" className="text-sm mb-6 block" style={{ color: '#4f46e5' }}>
           ← Back to Students
         </Link>
 
         {/* Header Card */}
-        <div className="rounded-xl p-6 mb-6 flex justify-between items-start" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+        <div className="rounded-xl p-6 mb-6 flex justify-between items-start bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
           <div>
-            <h2 className="text-xl font-semibold" style={{ color: '#e2e8f0' }}>{student.full_name}</h2>
+            <h2 className="text-xl font-semibold" style={{ color: '#1e1b4b' }}>{student.full_name}</h2>
             <p className="text-sm mt-1" style={{ color: '#64748b' }}>
-              Learner Code: <span className="font-mono" style={{ color: '#38bdf8' }}>{student.learner_code}</span>
+              Learner Code: <span className="font-mono" style={{ color: '#4f46e5' }}>{student.learner_code}</span>
             </p>
             <p className="text-sm mt-1" style={{ color: '#64748b' }}>
-              Class: <span style={{ color: '#cbd5e1' }}>{student.class || '—'}</span>
+              Class: <span style={{ color: '#334155' }}>{student.class || '—'}</span>
             </p>
             <span className="inline-block mt-2 px-3 py-1 rounded-full text-xs font-medium" style={
               student.status === 'active'
-                ? { background: '#052e16', color: '#4ade80' }
-                : { background: '#2d1b1b', color: '#f87171' }
+                ? { background: '#dcfce7', color: '#16a34a' }
+                : { background: '#fee2e2', color: '#dc2626' }
             }>
               {student.status}
             </span>
@@ -116,7 +116,7 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
             <button
               onClick={() => setShowMoveForm(!showMoveForm)}
               className="px-4 py-2 rounded-lg text-sm font-medium transition"
-              style={{ background: '#38bdf8', color: '#0f172a' }}
+              style={{ background: '#4f46e5', color: '#ffffff' }}
             >
               Move Student
             </button>
@@ -124,7 +124,7 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
               <button
                 onClick={handleWithdraw}
                 className="px-4 py-2 rounded-lg text-sm font-medium transition"
-                style={{ border: '1px solid #f87171', color: '#f87171' }}
+                style={{ border: '1px solid #f87171', color: '#dc2626' }}
               >
                 Withdraw
               </button>
@@ -132,7 +132,7 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
               <button
                 onClick={handleReactivate}
                 className="px-4 py-2 rounded-lg text-sm font-medium transition"
-                style={{ border: '1px solid #4ade80', color: '#4ade80' }}
+                style={{ border: '1px solid #4ade80', color: '#16a34a' }}
               >
                 Reactivate
               </button>
@@ -142,16 +142,16 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
 
         {/* Move Form */}
         {showMoveForm && (
-          <div className="rounded-xl p-6 mb-6" style={{ background: '#1e293b', border: '1px solid #38bdf8' }}>
-            <h3 className="text-sm font-medium mb-4" style={{ color: '#e2e8f0' }}>Move to another class</h3>
+          <div className="rounded-xl p-6 mb-6 bg-white shadow-sm" style={{ border: '1px solid #4f46e5' }}>
+            <h3 className="text-sm font-medium mb-4" style={{ color: '#1e1b4b' }}>Move to another class</h3>
             <div className="grid grid-cols-2 gap-4 mb-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>New Class</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>New Class</label>
                 <select
                   value={newClass}
                   onChange={e => setNewClass(e.target.value)}
                   className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={{ background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }}
+                  style={{ background: '#ffffff', border: '1.5px solid #c7d2fe', color: '#1e293b' }}
                 >
                   <option value="">Select class</option>
                   {Object.entries(groupedClasses).map(([level, cls]: any) => (
@@ -164,14 +164,14 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
                 </select>
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Reason (optional)</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Reason (optional)</label>
                 <input
                   type="text"
                   value={moveReason}
                   onChange={e => setMoveReason(e.target.value)}
                   placeholder="e.g. Class balancing"
                   className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={{ background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }}
+                  style={{ background: '#ffffff', border: '1.5px solid #c7d2fe', color: '#1e293b' }}
                 />
               </div>
             </div>
@@ -179,7 +179,7 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
               onClick={handleMove}
               disabled={moving || !newClass}
               className="px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
-              style={{ background: '#38bdf8', color: '#0f172a' }}
+              style={{ background: '#4f46e5', color: '#ffffff' }}
             >
               {moving ? 'Moving...' : 'Confirm Move'}
             </button>
@@ -188,8 +188,8 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
 
         {/* Details Grid */}
         <div className="grid grid-cols-2 gap-6">
-          <div className="rounded-xl p-6" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-            <h3 className="text-sm font-medium mb-4" style={{ color: '#94a3b8' }}>Personal Details</h3>
+          <div className="rounded-xl p-6 bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
+            <h3 className="text-sm font-medium mb-4" style={{ color: '#4f46e5' }}>Personal Details</h3>
             <div className="space-y-3 text-sm">
               {[
                 { label: 'Date of Birth', value: student.date_of_birth },
@@ -201,15 +201,15 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
                 { label: 'Medical Conditions', value: student.medical_conditions },
               ].map((item, i) => (
                 <div key={i} className="flex justify-between">
-                  <span style={{ color: '#475569' }}>{item.label}</span>
-                  <span className="capitalize" style={{ color: '#cbd5e1' }}>{item.value || '—'}</span>
+                  <span style={{ color: '#94a3b8' }}>{item.label}</span>
+                  <span className="capitalize" style={{ color: '#334155' }}>{item.value || '—'}</span>
                 </div>
               ))}
             </div>
           </div>
 
-          <div className="rounded-xl p-6" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-            <h3 className="text-sm font-medium mb-4" style={{ color: '#94a3b8' }}>Guardian Details</h3>
+          <div className="rounded-xl p-6 bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
+            <h3 className="text-sm font-medium mb-4" style={{ color: '#4f46e5' }}>Guardian Details</h3>
             <div className="space-y-3 text-sm">
               {[
                 { label: 'Guardian Name', value: student.guardian_name },
@@ -220,8 +220,8 @@ export default function StudentProfile({ params }: { params: Promise<{ id: strin
                 { label: 'Boarding Status', value: student.boarding_status },
               ].map((item, i) => (
                 <div key={i} className="flex justify-between">
-                  <span style={{ color: '#475569' }}>{item.label}</span>
-                  <span className="capitalize" style={{ color: '#cbd5e1' }}>{item.value || '—'}</span>
+                  <span style={{ color: '#94a3b8' }}>{item.label}</span>
+                  <span className="capitalize" style={{ color: '#334155' }}>{item.value || '—'}</span>
                 </div>
               ))}
             </div>

@@ -22,11 +22,17 @@ export default function Sidebar() {
   }
 
   return (
-    <div className="w-56 min-h-screen flex flex-col fixed left-0 top-0" style={{ background: '#0f172a', borderRight: '1px solid #1e293b' }}>
+    <div
+      className="w-56 min-h-screen flex flex-col fixed left-0 top-0"
+      style={{
+        background: 'linear-gradient(180deg, #312e81 0%, #4338ca 50%, #0f172a 100%)',
+        borderRight: '1px solid rgba(255,255,255,0.08)',
+      }}
+    >
       {/* Logo */}
-      <div className="px-6 py-5" style={{ borderBottom: '1px solid #1e293b' }}>
-        <h1 className="text-base font-bold" style={{ color: '#38bdf8' }}>Frankies EduTech</h1>
-        <p className="text-xs mt-0.5" style={{ color: '#475569' }}>School Admin</p>
+      <div className="px-6 py-5" style={{ borderBottom: '1px solid rgba(255,255,255,0.1)' }}>
+        <h1 className="text-base font-bold text-white">Frankies EduTech</h1>
+        <p className="text-xs mt-0.5" style={{ color: '#c7d2fe' }}>School Admin</p>
       </div>
 
       {/* Nav Items */}
@@ -38,19 +44,19 @@ export default function Sidebar() {
             className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition"
             style={
               pathname.startsWith(item.href)
-                ? { background: '#1e293b', color: '#38bdf8', fontWeight: 500 }
-                : { color: '#94a3b8' }
+                ? { background: 'rgba(255,255,255,0.15)', color: '#ffffff', fontWeight: 500 }
+                : { color: '#c7d2fe' }
             }
             onMouseEnter={e => {
               if (!pathname.startsWith(item.href)) {
-                (e.currentTarget as HTMLElement).style.background = '#1e293b'
-                ;(e.currentTarget as HTMLElement).style.color = '#cbd5e1'
+                (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.08)'
+                ;(e.currentTarget as HTMLElement).style.color = '#ffffff'
               }
             }}
             onMouseLeave={e => {
               if (!pathname.startsWith(item.href)) {
                 (e.currentTarget as HTMLElement).style.background = 'transparent'
-                ;(e.currentTarget as HTMLElement).style.color = '#94a3b8'
+                ;(e.currentTarget as HTMLElement).style.color = '#c7d2fe'
               }
             }}
           >
@@ -61,18 +67,18 @@ export default function Sidebar() {
       </nav>
 
       {/* Sign Out */}
-      <div className="px-3 py-4" style={{ borderTop: '1px solid #1e293b' }}>
+      <div className="px-3 py-4" style={{ borderTop: '1px solid rgba(255,255,255,0.1)' }}>
         <button
           onClick={handleLogout}
           className="flex items-center gap-3 px-3 py-2.5 rounded-lg text-sm transition w-full"
-          style={{ color: '#64748b' }}
+          style={{ color: '#c7d2fe' }}
           onMouseEnter={e => {
-            (e.currentTarget as HTMLElement).style.background = '#1e293b'
-            ;(e.currentTarget as HTMLElement).style.color = '#f87171'
+            (e.currentTarget as HTMLElement).style.background = 'rgba(255,255,255,0.08)'
+            ;(e.currentTarget as HTMLElement).style.color = '#fca5a5'
           }}
           onMouseLeave={e => {
             (e.currentTarget as HTMLElement).style.background = 'transparent'
-            ;(e.currentTarget as HTMLElement).style.color = '#64748b'
+            ;(e.currentTarget as HTMLElement).style.color = '#c7d2fe'
           }}
         >
           <span>🚪</span>

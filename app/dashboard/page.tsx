@@ -207,18 +207,18 @@ export default function Dashboard() {
   }
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen bg-indigo-50/40">
       <Sidebar />
       <div className="ml-56 flex-1 flex items-center justify-center">
-        <p style={{ color: '#475569' }}>Loading...</p>
+        <p style={{ color: '#6366f1' }}>Loading...</p>
       </div>
     </div>
   )
 
   const statCards = [
-    { label: 'Total Students', value: stats.total, color: '#38bdf8' },
-    { label: 'Male', value: stats.male, color: '#818cf8' },
-    { label: 'Female', value: stats.female, color: '#f472b6' },
+    { label: 'Total Students', value: stats.total, color: '#4f46e5' },
+    { label: 'Male', value: stats.male, color: '#6366f1' },
+    { label: 'Female', value: stats.female, color: '#ec4899' },
   ]
 
   const levels = [
@@ -229,16 +229,16 @@ export default function Dashboard() {
   ]
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a', fontFamily: 'Poppins, sans-serif' }}>
+    <div className="flex min-h-screen bg-indigo-50/40" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <Sidebar />
       <div className="ml-56 flex-1 p-8">
         <div className="flex justify-between items-center mb-6">
-          <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>School Overview</h2>
+          <h2 className="text-lg font-medium" style={{ color: '#312e81' }}>School Overview</h2>
           <button
             onClick={generateRegisterPDF}
             disabled={generatingPdf}
             className="px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
-            style={{ background: '#1e293b', border: '1px solid #334155', color: '#94a3b8' }}
+            style={{ background: '#ffffff', border: '1px solid #c7d2fe', color: '#4f46e5' }}
           >
             {generatingPdf ? 'Generating...' : '⬇ Download Class Register'}
           </button>
@@ -246,34 +246,34 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-3 gap-4 mb-8">
           {statCards.map((card, i) => (
-            <div key={i} className="rounded-xl p-6" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+            <div key={i} className="rounded-xl p-6 bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
               <p className="text-sm mb-2" style={{ color: '#64748b' }}>{card.label}</p>
               <p className="text-4xl font-semibold" style={{ color: card.color }}>{card.value}</p>
             </div>
           ))}
         </div>
 
-        <h2 className="text-base font-medium mb-4" style={{ color: '#e2e8f0' }}>Enrolment by Level</h2>
-        <div className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+        <h2 className="text-base font-medium mb-4" style={{ color: '#312e81' }}>Enrolment by Level</h2>
+        <div className="rounded-xl overflow-hidden bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
           <table className="w-full text-sm">
             <thead>
-              <tr style={{ borderBottom: '1px solid #334155' }}>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Level</th>
-                <th className="text-center px-6 py-3 font-medium" style={{ color: '#475569' }}>Male</th>
-                <th className="text-center px-6 py-3 font-medium" style={{ color: '#475569' }}>Female</th>
-                <th className="text-center px-6 py-3 font-medium" style={{ color: '#475569' }}>Total</th>
+              <tr style={{ borderBottom: '1px solid #e0e7ff', background: '#eef2ff' }}>
+                <th className="text-left px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Level</th>
+                <th className="text-center px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Male</th>
+                <th className="text-center px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Female</th>
+                <th className="text-center px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Total</th>
               </tr>
             </thead>
             <tbody>
               {levels.map((level, i) => (
-                <tr key={i} style={{ borderBottom: '1px solid #1e293b' }}
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}
+                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#eef2ff'}
                   onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                 >
-                  <td className="px-6 py-4 font-medium" style={{ color: '#cbd5e1' }}>{level.name}</td>
-                  <td className="px-6 py-4 text-center" style={{ color: '#818cf8' }}>{level.data.male}</td>
-                  <td className="px-6 py-4 text-center" style={{ color: '#f472b6' }}>{level.data.female}</td>
-                  <td className="px-6 py-4 text-center font-semibold" style={{ color: '#38bdf8' }}>{level.data.total}</td>
+                  <td className="px-6 py-4 font-medium" style={{ color: '#334155' }}>{level.name}</td>
+                  <td className="px-6 py-4 text-center" style={{ color: '#6366f1' }}>{level.data.male}</td>
+                  <td className="px-6 py-4 text-center" style={{ color: '#ec4899' }}>{level.data.female}</td>
+                  <td className="px-6 py-4 text-center font-semibold" style={{ color: '#4f46e5' }}>{level.data.total}</td>
                 </tr>
               ))}
             </tbody>

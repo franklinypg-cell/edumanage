@@ -101,24 +101,24 @@ export default function NewStudentPage() {
   }, {})
 
   const inputStyle = {
-    background: '#0f172a',
-    border: '1.5px solid #334155',
-    color: '#e2e8f0',
+    background: '#ffffff',
+    border: '1.5px solid #c7d2fe',
+    color: '#1e293b',
   }
 
   const sectionLabel = (title: string) => (
-    <h3 className="text-xs font-semibold uppercase tracking-wider pb-2 mb-1 border-b" style={{ color: '#38bdf8', borderColor: '#1e3a5f' }}>
+    <h3 className="text-xs font-semibold uppercase tracking-wider pb-2 mb-1 border-b" style={{ color: '#4f46e5', borderColor: '#e0e7ff' }}>
       {title}
     </h3>
   )
 
   if (success) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen bg-indigo-50/40">
       <Sidebar />
       <div className="ml-56 flex-1 flex items-center justify-center">
-        <div className="rounded-xl p-8 text-center max-w-md w-full" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-          <div className="text-4xl mb-4" style={{ color: '#4ade80' }}>✓</div>
-          <h2 className="text-xl font-semibold mb-2" style={{ color: '#e2e8f0' }}>Student Enrolled</h2>
+        <div className="rounded-xl p-8 text-center max-w-md w-full bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
+          <div className="text-4xl mb-4" style={{ color: '#16a34a' }}>✓</div>
+          <h2 className="text-xl font-semibold mb-2" style={{ color: '#1e1b4b' }}>Student Enrolled</h2>
           <p className="text-sm mb-6" style={{ color: '#64748b' }}>The student has been successfully added to the system.</p>
           <div className="flex gap-3 justify-center">
             <button
@@ -133,13 +133,13 @@ export default function NewStudentPage() {
                 })
               }}
               className="px-4 py-2 rounded-lg text-sm font-medium transition"
-              style={{ background: '#38bdf8', color: '#0f172a' }}
+              style={{ background: '#4f46e5', color: '#ffffff' }}
             >
               Add Another
             </button>
             <Link href="/students"
               className="px-4 py-2 rounded-lg text-sm font-medium transition"
-              style={{ border: '1px solid #334155', color: '#94a3b8' }}
+              style={{ border: '1px solid #c7d2fe', color: '#4f46e5' }}
             >
               View All Students
             </Link>
@@ -150,21 +150,21 @@ export default function NewStudentPage() {
   )
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen bg-indigo-50/40">
       <Sidebar />
       <div className="ml-56 flex-1 p-8">
-        <Link href="/students" className="text-sm mb-6 block" style={{ color: '#38bdf8' }}>
+        <Link href="/students" className="text-sm mb-6 block" style={{ color: '#4f46e5' }}>
           ← Back to Students
         </Link>
-        <h2 className="text-lg font-medium mb-6" style={{ color: '#e2e8f0' }}>Enrol New Student</h2>
+        <h2 className="text-lg font-medium mb-6" style={{ color: '#1e1b4b' }}>Enrol New Student</h2>
 
-        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-8 max-w-3xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-8 max-w-3xl bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
 
           {sectionLabel('Personal Information')}
           <div className="space-y-4">
 
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Full Name <span style={{ color: '#f87171' }}>*</span></label>
+              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Full Name <span style={{ color: '#dc2626' }}>*</span></label>
               <input
                 type="text"
                 value={form.full_name}
@@ -178,7 +178,7 @@ export default function NewStudentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Date of Birth <span style={{ color: '#f87171' }}>*</span></label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Date of Birth <span style={{ color: '#dc2626' }}>*</span></label>
                 <input
                   type="date"
                   value={form.date_of_birth}
@@ -189,7 +189,7 @@ export default function NewStudentPage() {
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Gender <span style={{ color: '#f87171' }}>*</span></label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Gender <span style={{ color: '#dc2626' }}>*</span></label>
                 <select
                   value={form.gender}
                   onChange={e => update('gender', e.target.value)}
@@ -206,7 +206,7 @@ export default function NewStudentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Nationality</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Nationality</label>
                 <input
                   type="text"
                   value={form.nationality}
@@ -217,7 +217,7 @@ export default function NewStudentPage() {
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Hometown</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Hometown</label>
                 <input
                   type="text"
                   value={form.hometown}
@@ -231,7 +231,7 @@ export default function NewStudentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Religion</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Religion</label>
                 <select
                   value={form.religion}
                   onChange={e => update('religion', e.target.value)}
@@ -246,7 +246,7 @@ export default function NewStudentPage() {
                 </select>
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Blood Group</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Blood Group</label>
                 <select
                   value={form.blood_group}
                   onChange={e => update('blood_group', e.target.value)}
@@ -262,7 +262,7 @@ export default function NewStudentPage() {
             </div>
 
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Medical Conditions</label>
+              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Medical Conditions</label>
               <input
                 type="text"
                 value={form.medical_conditions}
@@ -277,7 +277,7 @@ export default function NewStudentPage() {
           {sectionLabel('School Details')}
           <div className="space-y-4">
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Class <span style={{ color: '#f87171' }}>*</span></label>
+              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Class <span style={{ color: '#dc2626' }}>*</span></label>
               <select
                 value={form.class}
                 onChange={e => update('class', e.target.value)}
@@ -298,7 +298,7 @@ export default function NewStudentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Class Teacher</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Class Teacher</label>
                 <input
                   type="text"
                   value={form.class_teacher}
@@ -309,7 +309,7 @@ export default function NewStudentPage() {
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Boarding Status</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Boarding Status</label>
                 <select
                   value={form.boarding_status}
                   onChange={e => update('boarding_status', e.target.value)}
@@ -324,7 +324,7 @@ export default function NewStudentPage() {
             </div>
 
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Previous School</label>
+              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Previous School</label>
               <input
                 type="text"
                 value={form.previous_school}
@@ -341,7 +341,7 @@ export default function NewStudentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Guardian Name <span style={{ color: '#f87171' }}>*</span></label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Guardian Name <span style={{ color: '#dc2626' }}>*</span></label>
                 <input
                   type="text"
                   value={form.guardian_name}
@@ -353,7 +353,7 @@ export default function NewStudentPage() {
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Relationship</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Relationship</label>
                 <select
                   value={form.guardian_relationship}
                   onChange={e => update('guardian_relationship', e.target.value)}
@@ -374,7 +374,7 @@ export default function NewStudentPage() {
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Primary Phone <span style={{ color: '#f87171' }}>*</span></label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Primary Phone <span style={{ color: '#dc2626' }}>*</span></label>
                 <input
                   type="tel"
                   value={form.guardian_phone}
@@ -386,7 +386,7 @@ export default function NewStudentPage() {
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Secondary Phone</label>
+                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Secondary Phone</label>
                 <input
                   type="tel"
                   value={form.guardian_phone_2}
@@ -404,13 +404,13 @@ export default function NewStudentPage() {
               type="submit"
               disabled={loading}
               className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
-              style={{ background: '#38bdf8', color: '#0f172a' }}
+              style={{ background: '#4f46e5', color: '#ffffff' }}
             >
               {loading ? 'Enrolling...' : 'Enrol Student'}
             </button>
             <Link href="/students"
               className="px-6 py-2 rounded-lg text-sm font-medium transition"
-              style={{ border: '1px solid #334155', color: '#94a3b8' }}
+              style={{ border: '1px solid #c7d2fe', color: '#4f46e5' }}
             >
               Cancel
             </Link>
