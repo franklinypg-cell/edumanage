@@ -22,9 +22,9 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-xl shadow-sm border border-gray-200 w-full max-w-md">
-        <h1 className="text-2xl font-semibold text-gray-800 mb-2">EduManage</h1>
+    <div className="min-h-screen bg-gradient-to-br from-indigo-900 via-indigo-700 to-slate-900 flex items-center justify-center px-4">
+      <div className="bg-white p-8 rounded-xl shadow-2xl shadow-indigo-950/40 border border-white/10 w-full max-w-md">
+        <h1 className="text-2xl font-semibold text-gray-800 mb-2">Frankie EduTech</h1>
         <p className="text-gray-500 text-sm mb-6">Sign in to your admin account</p>
         {error && <p className="text-red-500 text-sm mb-4">{error}</p>}
         <form onSubmit={handleLogin} className="space-y-4">
@@ -34,7 +34,7 @@ export default function LoginPage() {
               type="email"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
               placeholder="admin@school.com"
               required
             />
@@ -45,7 +45,7 @@ export default function LoginPage() {
               type="password"
               value={password}
               onChange={(e) => setPassword(e.target.value)}
-              className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-blue-400"
+              className="w-full border border-gray-200 rounded-lg px-4 py-2 text-sm focus:outline-none focus:border-indigo-400 focus:ring-2 focus:ring-indigo-100"
               placeholder="••••••••"
               required
             />
@@ -53,7 +53,7 @@ export default function LoginPage() {
           <button
             type="submit"
             disabled={loading}
-            className="w-full bg-blue-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-blue-700 transition disabled:opacity-50"
+            className="w-full bg-indigo-600 text-white py-2 rounded-lg text-sm font-medium hover:bg-indigo-700 transition disabled:opacity-50"
           >
             {loading ? 'Signing in...' : 'Sign In'}
           </button>
