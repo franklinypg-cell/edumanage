@@ -60,235 +60,276 @@ export default function FeesPage() {
     if (data) setStudents(data)
   }
 
+  // ── Draw a single slip (10-per-page: 2 cols x 5 rows) — black & white only ──
   const drawSlip = (doc: jsPDF, fee: any, x: number, y: number, slipW: number, slipH: number) => {
-    const pad = 5
+    const pad = 4
     const mid = x + slipW / 2
 
-    // Border
+    // Outer border
     doc.setDrawColor(0)
-    doc.setLineWidth(0.4)
-    doc.rect(x + 2, y + 2, slipW - 4, slipH - 4)
+    doc.setLineWidth(0.5)
+    doc.rect(x + 1, y + 1, slipW - 2, slipH - 2)
 
-    // Header
-    doc.setDrawColor(0)
-    doc.setLineWidth(0.4)
-    doc.line(x + 2, y + 16, x + slipW - 2, y + 16)
-
-    doc.setTextColor(0)
-    doc.setFontSize(8.5)
+    // Header — black bar with white text
+    doc.setFillColor(0, 0, 0)
+    doc.rect(x + 1, y + 1, slipW - 2, 13, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(7.5)
     doc.setFont('helvetica', 'bold')
-    doc.text('FRANKIES EDUTECH', mid, y + 8, { align: 'center' })
-    doc.setFontSize(6)
+    doc.text('FRANKIES EDUTECH', mid, y + 7, { align: 'center' })
+    doc.setFontSize(5)
     doc.setFont('helvetica', 'normal')
-    doc.setTextColor(60, 60, 60)
-    doc.text('OFFICIAL FEE RECEIPT', mid, y + 13, { align: 'center' })
+    doc.text('OFFICIAL FEE RECEIPT', mid, y + 11.5, { align: 'center' })
 
-    // Receipt no & date
+    // Receipt ref & date
     doc.setTextColor(0)
-    doc.setFontSize(6.5)
+    doc.setFontSize(5.5)
     doc.setFont('helvetica', 'bold')
-    doc.text(`Receipt: ${fee.receipt_number}`, x + pad, y + 21)
+    doc.text(`Ref: ${fee.receipt_number}`, x + pad, y + 17)
     doc.setFont('helvetica', 'normal')
-    doc.text(`Date: ${fee.payment_date}`, x + slipW - pad, y + 21, { align: 'right' })
+    doc.setTextColor(60)
+    doc.text(`${fee.payment_date}`, x + slipW - pad, y + 17, { align: 'right' })
 
     // Divider
-    doc.setDrawColor(180)
+    doc.setDrawColor(0)
     doc.setLineWidth(0.2)
-    doc.line(x + pad, y + 23, x + slipW - pad, y + 23)
+    doc.line(x + pad, y + 19, x + slipW - pad, y + 19)
 
     // Student info
-    doc.setTextColor(100)
-    doc.setFontSize(5.5)
-    doc.text('STUDENT NAME', x + pad, y + 27)
+    doc.setTextColor(80)
+    doc.setFontSize(4.5)
+    doc.setFont('helvetica', 'normal')
+    doc.text('STUDENT', x + pad, y + 22.5)
     doc.setTextColor(0)
-    doc.setFontSize(7)
+    doc.setFontSize(6)
     doc.setFont('helvetica', 'bold')
     const name = fee.students?.full_name || '—'
-    doc.text(name.length > 22 ? name.substring(0, 22) + '...' : name, x + pad, y + 31)
+    doc.text(name.length > 24 ? name.substring(0, 24) + '...' : name, x + pad, y + 26)
 
-    doc.setTextColor(100)
-    doc.setFontSize(5.5)
-    doc.setFont('helvetica', 'normal')
-    doc.text('LEARNER CODE', mid, y + 27)
-    doc.setTextColor(0)
-    doc.setFontSize(7)
-    doc.setFont('helvetica', 'bold')
-    doc.text(fee.students?.learner_code || '—', mid, y + 31)
-
-    doc.setTextColor(100)
-    doc.setFontSize(5.5)
-    doc.setFont('helvetica', 'normal')
-    doc.text('CLASS', x + pad, y + 35)
-    doc.setTextColor(0)
-    doc.setFontSize(7)
-    doc.setFont('helvetica', 'bold')
-    doc.text(fee.students?.class || '—', x + pad, y + 39)
-
-    doc.setTextColor(100)
-    doc.setFontSize(5.5)
-    doc.setFont('helvetica', 'normal')
-    doc.text('TERM / YEAR', mid, y + 35)
-    doc.setTextColor(0)
-    doc.setFontSize(7)
-    doc.setFont('helvetica', 'bold')
-    doc.text(`${fee.term} · ${fee.academic_year}`, mid, y + 39)
-
-    // Amount box
-    doc.setDrawColor(0)
-    doc.setLineWidth(0.3)
-    doc.rect(x + pad, y + 41, slipW - pad * 2, 11)
     doc.setTextColor(80)
-    doc.setFontSize(5.5)
+    doc.setFontSize(4.5)
     doc.setFont('helvetica', 'normal')
-    doc.text('AMOUNT PAID', mid, y + 45, { align: 'center' })
+    doc.text('CODE', mid, y + 22.5)
     doc.setTextColor(0)
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
-    doc.text(`GH\u20B5 ${fee.amount}`, mid, y + 50, { align: 'center' })
-
-    doc.setTextColor(60)
     doc.setFontSize(6)
+    doc.setFont('helvetica', 'bold')
+    doc.text(fee.students?.learner_code || '—', mid, y + 26)
+
+    doc.setTextColor(80)
+    doc.setFontSize(4.5)
     doc.setFont('helvetica', 'normal')
-    doc.text(`Method: ${fee.payment_method.replace('_', ' ').toUpperCase()}`, x + pad, y + 55)
+    doc.text('CLASS', x + pad, y + 29.5)
+    doc.setTextColor(0)
+    doc.setFontSize(6)
+    doc.setFont('helvetica', 'bold')
+    doc.text(fee.students?.class || '—', x + pad, y + 33)
+
+    doc.setTextColor(80)
+    doc.setFontSize(4.5)
+    doc.setFont('helvetica', 'normal')
+    doc.text('TERM / YEAR', mid, y + 29.5)
+    doc.setTextColor(0)
+    doc.setFontSize(5.5)
+    doc.setFont('helvetica', 'bold')
+    doc.text(`${fee.term}  ${fee.academic_year}`, mid, y + 33)
+
+    // Amount box — black border, no fill
+    doc.setDrawColor(0)
+    doc.setLineWidth(0.4)
+    doc.rect(x + pad, y + 35, slipW - pad * 2, 10)
+    doc.setTextColor(80)
+    doc.setFontSize(4.5)
+    doc.setFont('helvetica', 'normal')
+    doc.text('AMOUNT PAID', mid, y + 38.5, { align: 'center' })
+    doc.setTextColor(0)
+    doc.setFontSize(9)
+    doc.setFont('helvetica', 'bold')
+    doc.text(`GHS ${Number(fee.amount).toFixed(2)}`, mid, y + 43, { align: 'center' })
+
+    // Method
+    doc.setTextColor(60)
+    doc.setFontSize(5)
+    doc.setFont('helvetica', 'normal')
+    doc.text(`Method: ${fee.payment_method.replace('_', ' ').toUpperCase()}`, x + pad, y + 47.5)
 
     // Divider
-    doc.setDrawColor(180)
-    doc.setLineWidth(0.2)
-    doc.line(x + pad, y + 57, x + slipW - pad, y + 57)
+    doc.setDrawColor(0)
+    doc.setLineWidth(0.15)
+    doc.line(x + pad, y + 49, x + slipW - pad, y + 49)
 
-    // Signature lines
+    // Signature line
     doc.setTextColor(60)
-    doc.setFontSize(6)
-    doc.text('Received by: ___________________', x + pad, y + 62)
-    doc.text('Signature:  _____________________', x + pad, y + 68)
+    doc.setFontSize(5)
+    doc.text('Authorised by: ___________________', x + pad, y + 53)
 
     // Stamp box
-    doc.setDrawColor(150)
+    doc.setDrawColor(0)
     doc.setLineWidth(0.3)
-    doc.rect(x + slipW - pad - 24, y + 58, 24, 14)
-    doc.setTextColor(150)
-    doc.setFontSize(5.5)
-    doc.text('ACCOUNTANT', x + slipW - pad - 12, y + 64, { align: 'center' })
-    doc.text('STAMP', x + slipW - pad - 12, y + 69, { align: 'center' })
+    doc.rect(x + slipW - pad - 22, y + 49, 22, 10)
+    doc.setTextColor(120)
+    doc.setFontSize(4.5)
+    doc.text('OFFICIAL', x + slipW - pad - 11, y + 53, { align: 'center' })
+    doc.text('STAMP', x + slipW - pad - 11, y + 56.5, { align: 'center' })
+
+    // Trademark footer
+    doc.setTextColor(140)
+    doc.setFontSize(3.8)
+    doc.setFont('helvetica', 'italic')
+    doc.text('TM Frankies EduTech. All rights reserved.', mid, y + slipH - 2, { align: 'center' })
   }
 
-  // Single receipt — 1 per page, clean A4
+  // ── Single A4 receipt — black & white, official ──
   const generateReceipt = (fee: any) => {
     const doc = new jsPDF({ format: 'a4', unit: 'mm' })
     const pageW = 210
     const pad = 20
 
-    // Header
-    doc.setTextColor(0)
-    doc.setFontSize(16)
+    // Header bar — black
+    doc.setFillColor(0, 0, 0)
+    doc.rect(0, 0, pageW, 30, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(18)
     doc.setFont('helvetica', 'bold')
-    doc.text('FRANKIES EDUTECH', pageW / 2, 25, { align: 'center' })
-    doc.setFontSize(10)
+    doc.text('FRANKIES EDUTECH', pageW / 2, 13, { align: 'center' })
+    doc.setFontSize(8)
     doc.setFont('helvetica', 'normal')
-    doc.setTextColor(60)
-    doc.text('OFFICIAL FEE RECEIPT', pageW / 2, 33, { align: 'center' })
+    doc.setTextColor(200, 200, 200)
+    doc.text('School Management & Fee Payment System', pageW / 2, 20, { align: 'center' })
+    doc.setFontSize(7.5)
+    doc.text('OFFICIAL FEE RECEIPT', pageW / 2, 27, { align: 'center' })
+
+    // Receipt ref & date
+    doc.setTextColor(0)
+    doc.setFontSize(10)
+    doc.setFont('helvetica', 'bold')
+    doc.text(`Receipt No:  ${fee.receipt_number}`, pad, 42)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(80)
+    doc.text(`Date Issued: ${fee.payment_date}`, pageW - pad, 42, { align: 'right' })
 
     doc.setDrawColor(0)
-    doc.setLineWidth(0.5)
-    doc.line(pad, 38, pageW - pad, 38)
+    doc.setLineWidth(0.4)
+    doc.line(pad, 46, pageW - pad, 46)
 
-    // Receipt info
-    doc.setTextColor(0)
-    doc.setFontSize(10)
-    doc.setFont('helvetica', 'bold')
-    doc.text(`Receipt No: ${fee.receipt_number}`, pad, 48)
-    doc.text(`Date: ${fee.payment_date}`, pageW - pad, 48, { align: 'right' })
-
-    // Student box
-    doc.setDrawColor(180)
-    doc.setLineWidth(0.3)
-    doc.rect(pad, 54, pageW - pad * 2, 38)
-
-    doc.setTextColor(100)
-    doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
-    doc.text('STUDENT NAME', pad + 5, 62)
-    doc.setTextColor(0)
-    doc.setFontSize(11)
-    doc.setFont('helvetica', 'bold')
-    doc.text(fee.students?.full_name || '—', pad + 5, 69)
-
-    doc.setTextColor(100)
-    doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
-    doc.text('LEARNER CODE', pageW / 2, 62)
-    doc.setTextColor(0)
-    doc.setFontSize(11)
-    doc.setFont('helvetica', 'bold')
-    doc.text(fee.students?.learner_code || '—', pageW / 2, 69)
-
-    doc.setTextColor(100)
-    doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
-    doc.text('CLASS', pad + 5, 76)
-    doc.setTextColor(0)
-    doc.setFontSize(11)
-    doc.setFont('helvetica', 'bold')
-    doc.text(fee.students?.class || '—', pad + 5, 83)
-
-    doc.setTextColor(100)
-    doc.setFontSize(8)
-    doc.setFont('helvetica', 'normal')
-    doc.text('TERM / ACADEMIC YEAR', pageW / 2, 76)
-    doc.setTextColor(0)
-    doc.setFontSize(11)
-    doc.setFont('helvetica', 'bold')
-    doc.text(`${fee.term} · ${fee.academic_year}`, pageW / 2, 83)
-
-    // Amount box
+    // Student info box
     doc.setDrawColor(0)
-    doc.setLineWidth(0.5)
-    doc.rect(pad, 98, pageW - pad * 2, 22)
+    doc.setLineWidth(0.4)
+    doc.rect(pad, 52, pageW - pad * 2, 44)
+
+    // Section header — black bar
+    doc.setFillColor(0, 0, 0)
+    doc.rect(pad, 52, pageW - pad * 2, 8, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'bold')
+    doc.text('STUDENT INFORMATION', pad + 5, 57.5)
+
+    doc.setTextColor(100)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'normal')
+    doc.text('Full Name', pad + 5, 68)
+    doc.setTextColor(0)
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text(fee.students?.full_name || '—', pad + 5, 75)
+
+    doc.setTextColor(100)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'normal')
+    doc.text('Learner Code', pageW / 2, 68)
+    doc.setTextColor(0)
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text(fee.students?.learner_code || '—', pageW / 2, 75)
+
+    doc.setTextColor(100)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'normal')
+    doc.text('Class', pad + 5, 84)
+    doc.setTextColor(0)
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text(fee.students?.class || '—', pad + 5, 91)
+
+    doc.setTextColor(100)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'normal')
+    doc.text('Term / Academic Year', pageW / 2, 84)
+    doc.setTextColor(0)
+    doc.setFontSize(12)
+    doc.setFont('helvetica', 'bold')
+    doc.text(`${fee.term}  |  ${fee.academic_year}`, pageW / 2, 91)
+
+    // Payment box
+    doc.setDrawColor(0)
+    doc.setLineWidth(0.4)
+    doc.rect(pad, 102, pageW - pad * 2, 28)
+
+    doc.setFillColor(0, 0, 0)
+    doc.rect(pad, 102, pageW - pad * 2, 8, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'bold')
+    doc.text('PAYMENT DETAILS', pad + 5, 107.5)
+
     doc.setTextColor(80)
     doc.setFontSize(9)
     doc.setFont('helvetica', 'normal')
-    doc.text('AMOUNT PAID', pageW / 2, 106, { align: 'center' })
+    doc.text('Amount Paid', pageW / 2, 117, { align: 'center' })
     doc.setTextColor(0)
-    doc.setFontSize(18)
+    doc.setFontSize(22)
     doc.setFont('helvetica', 'bold')
-    doc.text(`GH\u20B5 ${fee.amount}`, pageW / 2, 115, { align: 'center' })
+    doc.text(`GHS ${Number(fee.amount).toFixed(2)}`, pageW / 2, 126, { align: 'center' })
 
-    // Method
     doc.setTextColor(60)
-    doc.setFontSize(10)
+    doc.setFontSize(9)
     doc.setFont('helvetica', 'normal')
-    doc.text(`Payment Method: ${fee.payment_method.replace('_', ' ').toUpperCase()}`, pad, 128)
+    doc.text(`Payment Method: ${fee.payment_method.replace('_', ' ').toUpperCase()}`, pad, 138)
 
-    doc.setDrawColor(180)
+    doc.setDrawColor(0)
     doc.setLineWidth(0.3)
-    doc.line(pad, 133, pageW - pad, 133)
+    doc.line(pad, 143, pageW - pad, 143)
 
     // Signature & stamp
     doc.setTextColor(0)
     doc.setFontSize(10)
-    doc.text('Received by: _______________________________', pad, 145)
-    doc.text('Signature:     _______________________________', pad, 158)
+    doc.text('Received by:   _______________________________', pad, 156)
+    doc.text('Authorised by: _______________________________', pad, 170)
 
-    doc.setDrawColor(150)
-    doc.setLineWidth(0.3)
-    doc.rect(pageW - pad - 45, 138, 45, 28)
-    doc.setTextColor(150)
+    doc.setDrawColor(0)
+    doc.setLineWidth(0.4)
+    doc.rect(pageW - pad - 50, 148, 50, 30)
+    doc.setTextColor(120)
     doc.setFontSize(9)
-    doc.text('ACCOUNTANT STAMP', pageW - pad - 22.5, 150, { align: 'center' })
+    doc.text('OFFICIAL STAMP', pageW - pad - 25, 165, { align: 'center' })
 
-    doc.setDrawColor(180)
-    doc.line(pad, 175, pageW - pad, 175)
-
-    doc.setTextColor(130)
+    // Footer note
+    doc.setDrawColor(0)
+    doc.setLineWidth(0.3)
+    doc.line(pad, 188, pageW - pad, 188)
+    doc.setTextColor(100)
     doc.setFontSize(8)
     doc.setFont('helvetica', 'italic')
-    doc.text('Thank you for your payment. Please retain this receipt for your records.', pageW / 2, 183, { align: 'center' })
-    doc.text('Generated by Frankies EduTech School Management System', pageW / 2, 190, { align: 'center' })
+    doc.text('Thank you for your payment. Please keep this receipt for your records.', pageW / 2, 196, { align: 'center' })
+    doc.text('This is a computer-generated receipt and is valid without a physical signature.', pageW / 2, 203, { align: 'center' })
+
+    // Trademark footer bar — black
+    doc.setFillColor(0, 0, 0)
+    doc.rect(0, 277, pageW, 20, 'F')
+    doc.setTextColor(255, 255, 255)
+    doc.setFontSize(8)
+    doc.setFont('helvetica', 'bold')
+    doc.text('FRANKIES EDUTECH', pageW / 2, 285, { align: 'center' })
+    doc.setFontSize(6.5)
+    doc.setFont('helvetica', 'normal')
+    doc.setTextColor(180, 180, 180)
+    doc.text('Empowering Ghana\'s Schools with Smart Technology  |  frankiesedutech.com', pageW / 2, 291, { align: 'center' })
+    doc.text('TM Frankies EduTech. All rights reserved.', pageW / 2, 296, { align: 'center' })
 
     doc.save(`receipt-${fee.receipt_number}.pdf`)
   }
 
-  // Bulk print — 6 per page
+  // ── Bulk print — 10 per page (2 cols x 5 rows) ──
   const generateBulkReceipts = async () => {
     setBulkPrinting(true)
     const { data } = await supabase
@@ -307,14 +348,16 @@ export default function FeesPage() {
     const doc = new jsPDF({ format: 'a4', unit: 'mm' })
     const pageW = 210
     const pageH = 297
-    const slipW = pageW / 2
-    const slipH = pageH / 3
+    const cols = 2
+    const rows = 5
+    const slipW = pageW / cols
+    const slipH = pageH / rows
 
     data.forEach((fee, index) => {
-      if (index > 0 && index % 6 === 0) doc.addPage()
-      const pos = index % 6
-      const col = pos % 2
-      const row = Math.floor(pos / 2)
+      if (index > 0 && index % (cols * rows) === 0) doc.addPage()
+      const pos = index % (cols * rows)
+      const col = pos % cols
+      const row = Math.floor(pos / cols)
       drawSlip(doc, fee, col * slipW, row * slipH, slipW, slipH)
     })
 
@@ -378,18 +421,14 @@ export default function FeesPage() {
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Fee Payments</h2>
           <div className="flex gap-3">
-            <button
-              onClick={() => setShowBulkForm(!showBulkForm)}
+            <button onClick={() => setShowBulkForm(!showBulkForm)}
               className="px-4 py-2 rounded-lg text-sm font-medium transition"
-              style={{ border: '1px solid #334155', color: '#94a3b8' }}
-            >
-              🖨 Bulk Print Receipts
+              style={{ border: '1px solid #334155', color: '#94a3b8' }}>
+              Bulk Print Receipts
             </button>
-            <button
-              onClick={() => setShowForm(!showForm)}
+            <button onClick={() => setShowForm(!showForm)}
               className="px-4 py-2 rounded-lg text-sm font-medium transition"
-              style={{ background: '#38bdf8', color: '#0f172a' }}
-            >
+              style={{ background: '#38bdf8', color: '#0f172a' }}>
               + Record Payment
             </button>
           </div>
@@ -448,7 +487,7 @@ export default function FeesPage() {
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Amount (GH₵) <span style={{ color: '#f87171' }}>*</span></label>
+                  <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Amount (GHS) <span style={{ color: '#f87171' }}>*</span></label>
                   <input type="number" value={form.amount} onChange={e => update('amount', e.target.value)}
                     className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle} placeholder="0.00" required />
                 </div>
@@ -529,7 +568,7 @@ export default function FeesPage() {
                       <div className="font-medium" style={{ color: '#e2e8f0' }}>{(fee.students as any)?.full_name}</div>
                       <div className="text-xs" style={{ color: '#475569' }}>{(fee.students as any)?.learner_code}</div>
                     </td>
-                    <td className="px-6 py-4 font-medium" style={{ color: '#4ade80' }}>GH₵ {fee.amount}</td>
+                    <td className="px-6 py-4 font-medium" style={{ color: '#4ade80' }}>GHS {fee.amount}</td>
                     <td className="px-6 py-4 capitalize" style={{ color: '#94a3b8' }}>{fee.payment_method.replace('_', ' ')}</td>
                     <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{fee.term} · {fee.academic_year}</td>
                     <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{fee.payment_date}</td>
