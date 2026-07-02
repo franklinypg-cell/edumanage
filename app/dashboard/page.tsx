@@ -5,9 +5,17 @@ import Sidebar from '../components/sidebar'
 import jsPDF from 'jspdf'
 import autoTable from 'jspdf-autotable'
 
+function getGreeting(hour: number): { en: string; tw: string } {
+  if (hour < 12) return { en: 'Good morning', tw: 'Maakye' }
+  if (hour < 17) return { en: 'Good afternoon', tw: 'Maaha' }
+  return { en: 'Good evening', tw: 'Maadwo' }
+}
+
 export default function Dashboard() {
   const [loading, setLoading] = useState(true)
   const [generatingPdf, setGeneratingPdf] = useState(false)
+  const [greeting, setGreeting] = useState<{ en: string; tw: string } | null>(null)
+  const [dateStr, setDateStr] = useState('')
   const [stats, setStats] = useState({
     total: 0, male: 0, female: 0,
     preschool: { male: 0, female: 0, total: 0 },
@@ -17,6 +25,12 @@ export default function Dashboard() {
   })
 
   useEffect(() => {
+    const now = new Date()
+    setGreeting(getGreeting(now.getHours()))
+    setDateStr(
+      now.toLocaleDateString('en-GH', { weekday: 'long', month: 'long', day: 'numeric' })
+    )
+
     const checkSession = async () => {
       const { data: { session } } = await supabase.auth.getSession()
       if (!session) window.location.href = '/'
@@ -228,10 +242,31 @@ export default function Dashboard() {
     { name: 'JHS', data: stats.jhs },
   ]
 
+  // Find the level with the highest enrolment for a small human-readable note
+  const topLevel = levels.reduce((a, b) => (b.data.total > a.data.total ? b : a), levels[0])
+
   return (
     <div className="flex min-h-screen bg-indigo-50/40" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <Sidebar />
       <div className="ml-56 flex-1 p-8">
+
+        {/* Humanized greeting */}
+        {greeting && (
+          <div className="mb-6">
+            <h1 className="text-2xl font-semibold" style={{ color: '#1e1b4b' }}>
+              {greeting.en}, Frankie EduTech <span className="font-normal" style={{ color: '#818cf8' }}>· {greeting.tw}</span> 👋
+            </h1>
+            <p className="text-sm mt-1" style={{ color: '#6366f1' }}>
+              {dateStr}
+              {stats.total > 0 && (
+                <span style={{ color: '#94a3b8' }}>
+                  {' '}· {stats.total} students enrolled{topLevel.data.total > 0 ? `, most in ${topLevel.name}` : ''}
+                </span>
+              )}
+            </p>
+          </div>
+        )}
+
         <div className="flex justify-between items-center mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#312e81' }}>School Overview</h2>
           <button

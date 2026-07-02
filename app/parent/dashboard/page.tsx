@@ -2,12 +2,69 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../../lib/supabase'
 
+// Fields we don't want to show in Bio Data (internal/technical)
+const HIDDEN_FIELDS = new Set([
+  'id', 'created_at', 'updated_at', 'status', 'auth_id', 'user_id',
+])
+
+// Friendly labels for known fields — anything not listed here gets
+// auto-formatted from the column name (e.g. "date_of_birth" -> "Date Of Birth")
+const FIELD_LABELS: Record<string, string> = {
+  full_name: 'Full Name',
+  learner_code: 'Learner Code',
+  admission_number: 'Admission Number',
+  date_of_birth: 'Date of Birth',
+  dob: 'Date of Birth',
+  gender: 'Gender',
+  class: 'Class',
+  class_name: 'Class',
+  religion: 'Religion',
+  nationality: 'Nationality',
+  home_town: 'Home Town',
+  hometown: 'Home Town',
+  address: 'Residential Address',
+  guardian_name: "Guardian's Name",
+  parent_name: "Parent's Name",
+  guardian_phone: "Guardian's Phone",
+  parent_phone: "Parent's Phone",
+  guardian_email: "Guardian's Email",
+  parent_email: "Parent's Email",
+  guardian_relationship: 'Relationship to Learner',
+  emergency_contact: 'Emergency Contact',
+  emergency_contact_name: 'Emergency Contact Name',
+  emergency_contact_phone: 'Emergency Contact Phone',
+  blood_group: 'Blood Group',
+  allergies: 'Allergies',
+  medical_conditions: 'Medical Conditions',
+  admission_date: 'Admission Date',
+  previous_school: 'Previous School',
+}
+
+function formatLabel(key: string): string {
+  if (FIELD_LABELS[key]) return FIELD_LABELS[key]
+  return key
+    .replace(/_/g, ' ')
+    .replace(/\b\w/g, (c) => c.toUpperCase())
+}
+
+function formatValue(key: string, value: any): string {
+  if (value === null || value === undefined || value === '') return '—'
+  if (key.toLowerCase().includes('date') || key === 'dob') {
+    const d = new Date(value)
+    if (!isNaN(d.getTime())) {
+      return d.toLocaleDateString('en-GB', { day: '2-digit', month: 'long', year: 'numeric' })
+    }
+  }
+  if (typeof value === 'boolean') return value ? 'Yes' : 'No'
+  return String(value)
+}
+
 export default function ParentDashboardPage() {
   const [student, setStudent] = useState<any>(null)
   const [reports, setReports] = useState<any[]>([])
   const [payments, setPayments] = useState<any[]>([])
   const [loading, setLoading] = useState(true)
-  const [activeTab, setActiveTab] = useState<'academics' | 'finance'>('academics')
+  const [activeTab, setActiveTab] = useState<'biodata' | 'academics' | 'finance'>('biodata')
   const [displayClass, setDisplayClass] = useState('General / Unassigned')
   const [totalPaid, setTotalPaid] = useState(0)
 
@@ -163,6 +220,12 @@ export default function ParentDashboardPage() {
   // Get first name only for greeting
   const firstName = student?.full_name?.split(' ')[0] || 'Parent'
 
+  // Build the ordered list of bio data fields to display, from whatever
+  // columns actually exist on the student record
+  const bioFields = student
+    ? Object.entries(student).filter(([key]) => !HIDDEN_FIELDS.has(key))
+    : []
+
   if (loading) return (
     <div className="min-h-screen flex items-center justify-center" style={{ background: '#0f172a', fontFamily: 'Poppins, sans-serif' }}>
       <div className="text-center">
@@ -239,6 +302,16 @@ export default function ParentDashboardPage() {
         {/* Tabs */}
         <div className="flex gap-2 mb-6 border-b pb-px" style={{ borderColor: '#334155' }}>
           <button
+            onClick={() => setActiveTab('biodata')}
+            className="px-4 py-2.5 text-xs font-semibold border-b-2 transition"
+            style={{
+              color: activeTab === 'biodata' ? '#38bdf8' : '#64748b',
+              borderColor: activeTab === 'biodata' ? '#38bdf8' : 'transparent'
+            }}
+          >
+            Bio Data
+          </button>
+          <button
             onClick={() => setActiveTab('academics')}
             className="px-4 py-2.5 text-xs font-semibold border-b-2 transition"
             style={{
@@ -259,6 +332,28 @@ export default function ParentDashboardPage() {
             Fees & Receipts ({payments.length})
           </button>
         </div>
+
+        {/* BIO DATA TAB */}
+        {activeTab === 'biodata' && (
+          <div className="rounded-xl p-6 border" style={{ background: '#1e293b', borderColor: '#334155' }}>
+            {bioFields.length === 0 ? (
+              <p style={{ color: '#64748b', fontSize: '13px' }}>No learner details available yet.</p>
+            ) : (
+              <div className="grid sm:grid-cols-2 gap-x-8 gap-y-5">
+                {bioFields.map(([key, value]) => (
+                  <div key={key}>
+                    <p className="text-[11px] font-medium uppercase tracking-wider" style={{ color: '#64748b' }}>
+                      {formatLabel(key)}
+                    </p>
+                    <p className="text-sm mt-0.5" style={{ color: '#e2e8f0' }}>
+                      {formatValue(key, value)}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
+          </div>
+        )}
 
         {/* ACADEMICS TAB */}
         {activeTab === 'academics' && (
