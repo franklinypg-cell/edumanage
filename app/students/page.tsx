@@ -1,3 +1,4 @@
+// TARGET PATH IN YOUR PROJECT: app/students/page.tsx
 'use client'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
@@ -74,6 +75,13 @@ export default function StudentsPage() {
               style={{ background: '#38bdf8', color: '#0f172a' }}
             >
               + Add Student
+            </Link>
+            <Link
+              href="/students/bulk-upload"
+              className="px-4 py-2 rounded-lg text-sm font-medium transition"
+              style={{ border: '1px solid #38bdf8', color: '#38bdf8' }}
+            >
+              Bulk Upload
             </Link>
           </div>
         </div>
