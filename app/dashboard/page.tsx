@@ -221,18 +221,18 @@ export default function Dashboard() {
   }
 
   if (loading) return (
-    <div className="flex min-h-screen bg-indigo-50/40">
+    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
       <Sidebar />
       <div className="md:ml-56 flex-1 flex items-center justify-center pt-14 md:pt-0">
-        <p style={{ color: '#6366f1' }}>Loading...</p>
+        <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
   )
 
   const statCards = [
-    { label: 'Total Students', value: stats.total, color: '#4f46e5' },
-    { label: 'Male', value: stats.male, color: '#6366f1' },
-    { label: 'Female', value: stats.female, color: '#ec4899' },
+    { label: 'Total Students', value: stats.total, color: '#38bdf8' },
+    { label: 'Male', value: stats.male, color: '#38bdf8' },
+    { label: 'Female', value: stats.female, color: '#f472b6' },
   ]
 
   const levels = [
@@ -246,20 +246,20 @@ export default function Dashboard() {
   const topLevel = levels.reduce((a, b) => (b.data.total > a.data.total ? b : a), levels[0])
 
   return (
-    <div className="flex min-h-screen bg-indigo-50/40" style={{ fontFamily: 'Poppins, sans-serif' }}>
+    <div className="flex min-h-screen" style={{ background: '#0f172a', fontFamily: 'Poppins, sans-serif' }}>
       <Sidebar />
       <div className="md:ml-56 flex-1 p-4 md:p-8 pt-20 md:pt-8">
 
         {/* Humanized greeting */}
         {greeting && (
           <div className="mb-6">
-            <h1 className="text-xl md:text-2xl font-semibold" style={{ color: '#1e1b4b' }}>
-              {greeting.en}, Frankie EduTech <span className="font-normal" style={{ color: '#818cf8' }}>· {greeting.tw}</span> 👋
+            <h1 className="text-xl md:text-2xl font-semibold" style={{ color: '#e2e8f0' }}>
+              {greeting.en}, Frankie EduTech <span className="font-normal" style={{ color: '#38bdf8' }}>· {greeting.tw}</span> 👋
             </h1>
-            <p className="text-sm mt-1" style={{ color: '#6366f1' }}>
+            <p className="text-sm mt-1" style={{ color: '#94a3b8' }}>
               {dateStr}
               {stats.total > 0 && (
-                <span style={{ color: '#94a3b8' }}>
+                <span style={{ color: '#475569' }}>
                   {' '}· {stats.total} students enrolled{topLevel.data.total > 0 ? `, most in ${topLevel.name}` : ''}
                 </span>
               )}
@@ -268,12 +268,12 @@ export default function Dashboard() {
         )}
 
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
-          <h2 className="text-lg font-medium" style={{ color: '#312e81' }}>School Overview</h2>
+          <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>School Overview</h2>
           <button
             onClick={generateRegisterPDF}
             disabled={generatingPdf}
             className="px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 w-full sm:w-auto"
-            style={{ background: '#ffffff', border: '1px solid #c7d2fe', color: '#4f46e5' }}
+            style={{ background: 'transparent', border: '1px solid #334155', color: '#38bdf8' }}
           >
             {generatingPdf ? 'Generating...' : '⬇ Download Class Register'}
           </button>
@@ -281,35 +281,35 @@ export default function Dashboard() {
 
         <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           {statCards.map((card, i) => (
-            <div key={i} className="rounded-xl p-6 bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
-              <p className="text-sm mb-2" style={{ color: '#64748b' }}>{card.label}</p>
+            <div key={i} className="rounded-xl p-6" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+              <p className="text-sm mb-2" style={{ color: '#94a3b8' }}>{card.label}</p>
               <p className="text-4xl font-semibold" style={{ color: card.color }}>{card.value}</p>
             </div>
           ))}
         </div>
 
-        <h2 className="text-base font-medium mb-4" style={{ color: '#312e81' }}>Enrolment by Level</h2>
-        <div className="rounded-xl overflow-hidden bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
+        <h2 className="text-base font-medium mb-4" style={{ color: '#e2e8f0' }}>Enrolment by Level</h2>
+        <div className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
           <div className="overflow-x-auto">
             <table className="w-full text-sm min-w-[480px]">
               <thead>
-                <tr style={{ borderBottom: '1px solid #e0e7ff', background: '#eef2ff' }}>
-                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Level</th>
-                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Male</th>
-                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Female</th>
-                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Total</th>
+                <tr style={{ borderBottom: '1px solid #334155' }}>
+                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Level</th>
+                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Male</th>
+                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Female</th>
+                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Total</th>
                 </tr>
               </thead>
               <tbody>
                 {levels.map((level, i) => (
-                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#eef2ff'}
+                  <tr key={i} style={{ borderBottom: '1px solid #1e293b' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
                     onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
                   >
-                    <td className="px-4 md:px-6 py-4 font-medium whitespace-nowrap" style={{ color: '#334155' }}>{level.name}</td>
-                    <td className="px-4 md:px-6 py-4 text-center" style={{ color: '#6366f1' }}>{level.data.male}</td>
-                    <td className="px-4 md:px-6 py-4 text-center" style={{ color: '#ec4899' }}>{level.data.female}</td>
-                    <td className="px-4 md:px-6 py-4 text-center font-semibold" style={{ color: '#4f46e5' }}>{level.data.total}</td>
+                    <td className="px-4 md:px-6 py-4 font-medium whitespace-nowrap" style={{ color: '#e2e8f0' }}>{level.name}</td>
+                    <td className="px-4 md:px-6 py-4 text-center" style={{ color: '#38bdf8' }}>{level.data.male}</td>
+                    <td className="px-4 md:px-6 py-4 text-center" style={{ color: '#f472b6' }}>{level.data.female}</td>
+                    <td className="px-4 md:px-6 py-4 text-center font-semibold" style={{ color: '#4ade80' }}>{level.data.total}</td>
                   </tr>
                 ))}
               </tbody>
