@@ -1,4 +1,4 @@
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { Poppins } from "next/font/google";
 import "./globals.css";
 
@@ -9,8 +9,25 @@ const poppins = Poppins({
 });
 
 export const metadata: Metadata = {
-  title: "Frankies EduTech",
-  description: "School Management System by Frankies EduTech",
+  title: "Frankie EduTech",
+  description: "School Management System by Frankie EduTech",
+  manifest: "/manifest.json",
+  appleWebApp: {
+    capable: true,
+    statusBarStyle: "default",
+    title: "Frankie Edu",
+  },
+  icons: {
+    icon: "/icons/icon-192.png",
+    apple: "/icons/icon-192.png",
+  },
+};
+
+export const viewport: Viewport = {
+  themeColor: "#7A1F3D", // swap for your maroon/blush brand color
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 1,
 };
 
 export default function RootLayout({
