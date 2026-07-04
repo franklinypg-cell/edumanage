@@ -223,7 +223,7 @@ export default function Dashboard() {
   if (loading) return (
     <div className="flex min-h-screen bg-indigo-50/40">
       <Sidebar />
-      <div className="ml-56 flex-1 flex items-center justify-center">
+      <div className="md:ml-56 flex-1 flex items-center justify-center pt-14 md:pt-0">
         <p style={{ color: '#6366f1' }}>Loading...</p>
       </div>
     </div>
@@ -248,12 +248,12 @@ export default function Dashboard() {
   return (
     <div className="flex min-h-screen bg-indigo-50/40" style={{ fontFamily: 'Poppins, sans-serif' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
+      <div className="md:ml-56 flex-1 p-4 md:p-8 pt-20 md:pt-8">
 
         {/* Humanized greeting */}
         {greeting && (
           <div className="mb-6">
-            <h1 className="text-2xl font-semibold" style={{ color: '#1e1b4b' }}>
+            <h1 className="text-xl md:text-2xl font-semibold" style={{ color: '#1e1b4b' }}>
               {greeting.en}, Frankie EduTech <span className="font-normal" style={{ color: '#818cf8' }}>· {greeting.tw}</span> 👋
             </h1>
             <p className="text-sm mt-1" style={{ color: '#6366f1' }}>
@@ -267,19 +267,19 @@ export default function Dashboard() {
           </div>
         )}
 
-        <div className="flex justify-between items-center mb-6">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#312e81' }}>School Overview</h2>
           <button
             onClick={generateRegisterPDF}
             disabled={generatingPdf}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 w-full sm:w-auto"
             style={{ background: '#ffffff', border: '1px solid #c7d2fe', color: '#4f46e5' }}
           >
             {generatingPdf ? 'Generating...' : '⬇ Download Class Register'}
           </button>
         </div>
 
-        <div className="grid grid-cols-3 gap-4 mb-8">
+        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-8">
           {statCards.map((card, i) => (
             <div key={i} className="rounded-xl p-6 bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
               <p className="text-sm mb-2" style={{ color: '#64748b' }}>{card.label}</p>
@@ -290,29 +290,31 @@ export default function Dashboard() {
 
         <h2 className="text-base font-medium mb-4" style={{ color: '#312e81' }}>Enrolment by Level</h2>
         <div className="rounded-xl overflow-hidden bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: '1px solid #e0e7ff', background: '#eef2ff' }}>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Level</th>
-                <th className="text-center px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Male</th>
-                <th className="text-center px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Female</th>
-                <th className="text-center px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Total</th>
-              </tr>
-            </thead>
-            <tbody>
-              {levels.map((level, i) => (
-                <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}
-                  onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#eef2ff'}
-                  onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
-                >
-                  <td className="px-6 py-4 font-medium" style={{ color: '#334155' }}>{level.name}</td>
-                  <td className="px-6 py-4 text-center" style={{ color: '#6366f1' }}>{level.data.male}</td>
-                  <td className="px-6 py-4 text-center" style={{ color: '#ec4899' }}>{level.data.female}</td>
-                  <td className="px-6 py-4 text-center font-semibold" style={{ color: '#4f46e5' }}>{level.data.total}</td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[480px]">
+              <thead>
+                <tr style={{ borderBottom: '1px solid #e0e7ff', background: '#eef2ff' }}>
+                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Level</th>
+                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Male</th>
+                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Female</th>
+                  <th className="text-center px-4 md:px-6 py-3 font-medium" style={{ color: '#4f46e5' }}>Total</th>
                 </tr>
-              ))}
-            </tbody>
-          </table>
+              </thead>
+              <tbody>
+                {levels.map((level, i) => (
+                  <tr key={i} style={{ borderBottom: '1px solid #f1f5f9' }}
+                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#eef2ff'}
+                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}
+                  >
+                    <td className="px-4 md:px-6 py-4 font-medium whitespace-nowrap" style={{ color: '#334155' }}>{level.name}</td>
+                    <td className="px-4 md:px-6 py-4 text-center" style={{ color: '#6366f1' }}>{level.data.male}</td>
+                    <td className="px-4 md:px-6 py-4 text-center" style={{ color: '#ec4899' }}>{level.data.female}</td>
+                    <td className="px-4 md:px-6 py-4 text-center font-semibold" style={{ color: '#4f46e5' }}>{level.data.total}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
