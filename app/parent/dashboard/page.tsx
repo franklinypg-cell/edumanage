@@ -124,15 +124,17 @@ export default function ParentDashboardPage() {
           .from('fees')
           .select('*')
           .eq('student_id', studentId)
-          .order('payment_date', { ascending: false })
+          .order('created_at', { ascending: false })
 
         if (feeRecords && feeRecords.length > 0) {
           setPayments(feeRecords)
           let paidSum = 0
           feeRecords.forEach((p: any) => { paidSum += Number(p.amount || 0) })
           setTotalPaid(paidSum)
-          // feeRecords is ordered by payment_date descending, so [0] is the most recent —
-          // its "balance" field holds the running balance as of that payment
+          // feeRecords is ordered by created_at descending, so [0] is the most recently
+          // recorded payment — its "balance" field holds the running balance as of that payment.
+          // (created_at is a precise timestamp, so same-day payments are never tied like
+          // payment_date could be — this fixes the stale-balance bug on multi-installment days.)
           setCurrentBalance(Number(feeRecords[0].balance) || 0)
         }
 
