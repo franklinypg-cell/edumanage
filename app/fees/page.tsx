@@ -951,7 +951,7 @@ export default function FeesPage() {
                               {Number(fee.balance) > 0
                                 ? `GHS ${fee.balance} owing`
                                 : Number(fee.balance) < 0
-                                ? `GHS ${Math.abs(fee.balance)} credit`
+                                ? `GHS ${Math.abs(Number(fee.balance))} credit`
                                 : 'Paid up'}
                             </td>
                             <td className="px-6 py-3 text-xs" style={{ color: '#94a3b8' }}>
