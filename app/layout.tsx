@@ -36,8 +36,11 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" className={`${poppins.variable} h-full antialiased`}>
-      <body className="min-h-full flex flex-col" style={{ fontFamily: "var(--font-poppins), sans-serif" }}>
+    <html lang="en" className={`${poppins.variable} h-full antialiased`} style={{ background: '#0f172a' }}>
+      <body
+        className="min-h-full flex flex-col w-full overflow-x-hidden"
+        style={{ fontFamily: "var(--font-poppins), sans-serif", background: '#0f172a' }}
+      >
         {children}
       </body>
     </html>

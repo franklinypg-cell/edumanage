@@ -221,9 +221,9 @@ export default function Dashboard() {
   }
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="md:ml-56 flex-1 flex items-center justify-center pt-14 md:pt-0">
+      <div className="md:ml-56 flex-1 w-full flex items-center justify-center pt-14 md:pt-0">
         <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
@@ -246,9 +246,9 @@ export default function Dashboard() {
   const topLevel = levels.reduce((a, b) => (b.data.total > a.data.total ? b : a), levels[0])
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a', fontFamily: 'Poppins, sans-serif' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a', fontFamily: 'Poppins, sans-serif' }}>
       <Sidebar />
-      <div className="md:ml-56 flex-1 p-4 md:p-8 pt-20 md:pt-8">
+      <div className="md:ml-56 flex-1 w-full p-4 md:p-8 pt-20 md:pt-8">
 
         {/* Humanized greeting */}
         {greeting && (
