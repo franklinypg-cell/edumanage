@@ -1,7 +1,8 @@
 "use client"
-import { useEffect, useState } from 'react'
+import { Fragment, useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import Sidebar from '../components/sidebar'
+import StudentPicker from '../components/StudentPicker'
 import jsPDF from 'jspdf'
 
 type Fee = {
@@ -27,8 +28,6 @@ type FeeStructure = {
   amount: number
 }
 
-// Helper: turns term + academic_year into a sortable number so we can tell
-// which terms came "before" the current one (e.g. Term 1 2025/2026 < Term 2 2025/2026)
 const termOrderKey = (term: string, academicYear: string) => {
   const yearStart = parseInt((academicYear || '0').split('/')[0], 10) || 0
   const termIndex = term === 'Term 1' ? 0 : term === 'Term 2' ? 1 : term === 'Term 3' ? 2 : 0
@@ -53,7 +52,6 @@ export default function FeesPage() {
   const [paidThisTermSoFar, setPaidThisTermSoFar] = useState(0)
   const [balancePreview, setBalancePreview] = useState(0)
 
-  // Which student rows are expanded to show individual payments
   const [expandedStudents, setExpandedStudents] = useState<Set<string>>(new Set())
 
   const [form, setForm] = useState({
@@ -81,7 +79,6 @@ export default function FeesPage() {
     checkSession()
   }, [])
 
-  // Recalculate arrears + current-term balance whenever student, term, year, or amount changes
   useEffect(() => {
     if (form.student_id && form.term && form.academic_year) {
       recalculateArrears()
@@ -129,9 +126,6 @@ export default function FeesPage() {
     if (data) setFeeStructures(data as any)
   }
 
-  // ── Core arrears + balance logic ──
-  // arrears = (expected fees for all terms BEFORE the current one) - (total paid in those terms)
-  // balance = (this term's fee + arrears) - (everything paid this term so far, including this payment)
   const recalculateArrears = async () => {
     setCheckingArrears(true)
     const student = students.find(s => s.id === form.student_id)
@@ -146,24 +140,20 @@ export default function FeesPage() {
 
     const currentKey = termOrderKey(form.term, form.academic_year)
 
-    // All fee structure rows for this student's class
     const { data: structureRows } = await supabase
       .from('fee_structure')
       .select('term, academic_year, amount')
       .eq('class', student.class)
 
-    // Arrears: expected fees from terms strictly BEFORE the current one, minus what was paid then
     const totalExpectedBefore = (structureRows || [])
       .filter(row => termOrderKey(row.term, row.academic_year) < currentKey)
       .reduce((sum, row) => sum + Number(row.amount), 0)
 
-    // This term's own expected fee (exact match on class + term + year)
     const thisTermRow = (structureRows || []).find(
       row => row.term === form.term && row.academic_year === form.academic_year
     )
     const thisTermExpected = thisTermRow ? Number(thisTermRow.amount) : 0
 
-    // All payments this student has made, ever
     const { data: paymentRows } = await supabase
       .from('fees')
       .select('term, academic_year, amount')
@@ -173,7 +163,6 @@ export default function FeesPage() {
       .filter(row => termOrderKey(row.term, row.academic_year) < currentKey)
       .reduce((sum, row) => sum + Number(row.amount), 0)
 
-    // Already paid THIS exact term (installments so far, before this new payment)
     const paidThisTerm = (paymentRows || [])
       .filter(row => row.term === form.term && row.academic_year === form.academic_year)
       .reduce((sum, row) => sum + Number(row.amount), 0)
@@ -214,18 +203,15 @@ export default function FeesPage() {
     fetchFeeStructures()
   }
 
-  // ── Draw a single slip (10-per-page: 2 cols x 5 rows) — black & white only ──
   const drawSlip = (doc: jsPDF, fee: any, x: number, y: number, slipW: number, slipH: number) => {
     const pad = 4
     const mid = x + slipW / 2
     const hasArrears = Number(fee.arrears) > 0
 
-    // Outer border
     doc.setDrawColor(0)
     doc.setLineWidth(0.5)
     doc.rect(x + 1, y + 1, slipW - 2, slipH - 2)
 
-    // Header — black bar with white text
     doc.setFillColor(0, 0, 0)
     doc.rect(x + 1, y + 1, slipW - 2, 13, 'F')
     doc.setTextColor(255, 255, 255)
@@ -236,7 +222,6 @@ export default function FeesPage() {
     doc.setFont('helvetica', 'normal')
     doc.text('OFFICIAL FEE RECEIPT', mid, y + 11.5, { align: 'center' })
 
-    // Receipt ref & date
     doc.setTextColor(0)
     doc.setFontSize(5.5)
     doc.setFont('helvetica', 'bold')
@@ -245,12 +230,10 @@ export default function FeesPage() {
     doc.setTextColor(60)
     doc.text(`${fee.payment_date}`, x + slipW - pad, y + 17, { align: 'right' })
 
-    // Divider
     doc.setDrawColor(0)
     doc.setLineWidth(0.2)
     doc.line(x + pad, y + 19, x + slipW - pad, y + 19)
 
-    // Student info
     doc.setTextColor(80)
     doc.setFontSize(4.5)
     doc.setFont('helvetica', 'normal')
@@ -288,7 +271,6 @@ export default function FeesPage() {
     doc.setFont('helvetica', 'bold')
     doc.text(`${fee.term}  ${fee.academic_year}`, mid, y + 33)
 
-    // Amount box — black border, no fill (grows to fit arrears/balance lines)
     const slipExtraLines = (hasArrears ? 1 : 0) + (Number(fee.balance) !== 0 || Number(fee.term_fee_expected) > 0 ? 1 : 0)
     const amountBoxH = 10 + slipExtraLines * 4
     doc.setDrawColor(0)
@@ -330,25 +312,21 @@ export default function FeesPage() {
       slipCursor += 4
     }
 
-    // Method
     const methodY = slipCursor + 0.5
     doc.setTextColor(60)
     doc.setFontSize(5)
     doc.setFont('helvetica', 'normal')
     doc.text(`Method: ${fee.payment_method.replace('_', ' ').toUpperCase()}`, x + pad, methodY)
 
-    // Divider
     const dividerY = methodY + 3.5
     doc.setDrawColor(0)
     doc.setLineWidth(0.15)
     doc.line(x + pad, dividerY, x + slipW - pad, dividerY)
 
-    // Signature line
     doc.setTextColor(60)
     doc.setFontSize(5)
     doc.text('Authorised by: ___________________', x + pad, dividerY + 4)
 
-    // Stamp box
     doc.setDrawColor(0)
     doc.setLineWidth(0.3)
     doc.rect(x + slipW - pad - 22, dividerY, 22, 10)
@@ -357,21 +335,18 @@ export default function FeesPage() {
     doc.text('OFFICIAL', x + slipW - pad - 11, dividerY + 4, { align: 'center' })
     doc.text('STAMP', x + slipW - pad - 11, dividerY + 7.5, { align: 'center' })
 
-    // Trademark footer
     doc.setTextColor(140)
     doc.setFontSize(3.8)
     doc.setFont('helvetica', 'italic')
     doc.text('TM Frankies EduTech. All rights reserved.', mid, y + slipH - 2, { align: 'center' })
   }
 
-  // ── Single A4 receipt — black & white, official ──
   const generateReceipt = (fee: any) => {
     const doc = new jsPDF({ format: 'a4', unit: 'mm' })
     const pageW = 210
     const pad = 20
     const hasArrears = Number(fee.arrears) > 0
 
-    // Header bar — black
     doc.setFillColor(0, 0, 0)
     doc.rect(0, 0, pageW, 30, 'F')
     doc.setTextColor(255, 255, 255)
@@ -385,7 +360,6 @@ export default function FeesPage() {
     doc.setFontSize(7.5)
     doc.text('OFFICIAL FEE RECEIPT', pageW / 2, 27, { align: 'center' })
 
-    // Receipt ref & date
     doc.setTextColor(0)
     doc.setFontSize(10)
     doc.setFont('helvetica', 'bold')
@@ -398,12 +372,10 @@ export default function FeesPage() {
     doc.setLineWidth(0.4)
     doc.line(pad, 46, pageW - pad, 46)
 
-    // Student info box
     doc.setDrawColor(0)
     doc.setLineWidth(0.4)
     doc.rect(pad, 52, pageW - pad * 2, 44)
 
-    // Section header — black bar
     doc.setFillColor(0, 0, 0)
     doc.rect(pad, 52, pageW - pad * 2, 8, 'F')
     doc.setTextColor(255, 255, 255)
@@ -447,7 +419,6 @@ export default function FeesPage() {
     doc.setFont('helvetica', 'bold')
     doc.text(`${fee.term}  |  ${fee.academic_year}`, pageW / 2, 91)
 
-    // Payment box (grows to fit arrears/balance lines if present)
     const extraLines = (hasArrears ? 1 : 0) + (Number(fee.balance) !== 0 || Number(fee.term_fee_expected) > 0 ? 1 : 0)
     const paymentBoxH = 28 + extraLines * 8
     doc.setDrawColor(0)
@@ -510,7 +481,6 @@ export default function FeesPage() {
     doc.setLineWidth(0.3)
     doc.line(pad, afterPaymentY + 5, pageW - pad, afterPaymentY + 5)
 
-    // Signature & stamp
     const sigY1 = afterPaymentY + 18
     const sigY2 = afterPaymentY + 32
     doc.setTextColor(0)
@@ -525,7 +495,6 @@ export default function FeesPage() {
     doc.setFontSize(9)
     doc.text('OFFICIAL STAMP', pageW - pad - 25, sigY1 + 9, { align: 'center' })
 
-    // Footer note
     const footerLineY = sigY2 + 18
     doc.setDrawColor(0)
     doc.setLineWidth(0.3)
@@ -536,7 +505,6 @@ export default function FeesPage() {
     doc.text('Thank you for your payment. Please keep this receipt for your records.', pageW / 2, footerLineY + 8, { align: 'center' })
     doc.text('This is a computer-generated receipt and is valid without a physical signature.', pageW / 2, footerLineY + 15, { align: 'center' })
 
-    // Trademark footer bar — black
     doc.setFillColor(0, 0, 0)
     doc.rect(0, 277, pageW, 20, 'F')
     doc.setTextColor(255, 255, 255)
@@ -552,7 +520,6 @@ export default function FeesPage() {
     doc.save(`receipt-${fee.receipt_number}.pdf`)
   }
 
-  // ── Bulk print — 10 per page (2 cols x 5 rows) ──
   const generateBulkReceipts = async () => {
     setBulkPrinting(true)
     const { data } = await supabase
@@ -642,9 +609,6 @@ export default function FeesPage() {
     })
   }
 
-  // ── Group payments by student, keeping most-recent-first order ──
-  // `fees` already arrives sorted by created_at descending (see fetchFees),
-  // so the first payment we encounter per student is their latest one.
   type StudentGroup = {
     student_id: string
     student: any
@@ -820,13 +784,13 @@ export default function FeesPage() {
             <div className="space-y-4">
               <div>
                 <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Student <span style={{ color: '#f87171' }}>*</span></label>
-                <select value={form.student_id} onChange={e => update('student_id', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle} required>
-                  <option value="">Select student</option>
-                  {students.map(s => (
-                    <option key={s.id} value={s.id}>{s.full_name} — {s.learner_code}</option>
-                  ))}
-                </select>
+                <StudentPicker
+                  students={students}
+                  value={form.student_id}
+                  onChange={id => update('student_id', id)}
+                  inputStyle={inputStyle}
+                  required
+                />
               </div>
               <div className="grid grid-cols-2 gap-4">
                 <div>
@@ -866,7 +830,6 @@ export default function FeesPage() {
                 </div>
               </div>
 
-              {/* Fee breakdown preview — auto-calculated, read-only */}
               {form.student_id && (
                 <div className="rounded-lg px-4 py-3 space-y-2" style={{ background: '#0f172a', border: '1px solid #334155' }}>
                   {checkingArrears ? (
@@ -947,8 +910,8 @@ export default function FeesPage() {
                   studentGroups.map(group => {
                     const isExpanded = expandedStudents.has(group.student_id)
                     return (
-                      <>
-                        <tr key={group.student_id} className="cursor-pointer transition" style={{ borderBottom: '1px solid #1e293b' }}
+                      <Fragment key={group.student_id}>
+                        <tr className="cursor-pointer transition" style={{ borderBottom: '1px solid #1e293b' }}
                           onClick={() => toggleExpand(group.student_id)}
                           onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
                           onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
@@ -997,7 +960,7 @@ export default function FeesPage() {
                             <td className="px-6 py-3 text-xs" style={{ color: '#64748b' }}>{fee.payment_date}</td>
                           </tr>
                         ))}
-                      </>
+                      </Fragment>
                     )
                   })
                 )}
