@@ -6,6 +6,7 @@ import jsPDF from 'jspdf'
 
 type Fee = {
   id: string
+  student_id: string
   amount: number
   arrears?: number
   balance?: number
@@ -51,6 +52,9 @@ export default function FeesPage() {
   const [termFeeExpected, setTermFeeExpected] = useState(0)
   const [paidThisTermSoFar, setPaidThisTermSoFar] = useState(0)
   const [balancePreview, setBalancePreview] = useState(0)
+
+  // Which student rows are expanded to show individual payments
+  const [expandedStudents, setExpandedStudents] = useState<Set<string>>(new Set())
 
   const [form, setForm] = useState({
     student_id: '',
@@ -629,6 +633,49 @@ export default function FeesPage() {
   const updateStructure = (field: string, value: string) =>
     setStructureForm(prev => ({ ...prev, [field]: value }))
 
+  const toggleExpand = (studentId: string) => {
+    setExpandedStudents(prev => {
+      const next = new Set(prev)
+      if (next.has(studentId)) next.delete(studentId)
+      else next.add(studentId)
+      return next
+    })
+  }
+
+  // ── Group payments by student, keeping most-recent-first order ──
+  // `fees` already arrives sorted by created_at descending (see fetchFees),
+  // so the first payment we encounter per student is their latest one.
+  type StudentGroup = {
+    student_id: string
+    student: any
+    payments: Fee[]
+    totalPaid: number
+    latestBalance: number
+    latestArrears: number
+    latestTerm: string
+    latestYear: string
+  }
+
+  const groupsMap: Record<string, StudentGroup> = {}
+  fees.forEach((fee) => {
+    const sid = fee.student_id
+    if (!groupsMap[sid]) {
+      groupsMap[sid] = {
+        student_id: sid,
+        student: fee.students,
+        payments: [],
+        totalPaid: 0,
+        latestBalance: Number(fee.balance) || 0,
+        latestArrears: Number(fee.arrears) || 0,
+        latestTerm: fee.term,
+        latestYear: fee.academic_year,
+      }
+    }
+    groupsMap[sid].payments.push(fee)
+    groupsMap[sid].totalPaid += Number(fee.amount || 0)
+  })
+  const studentGroups = Object.values(groupsMap)
+
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   if (loading) return (
@@ -877,53 +924,82 @@ export default function FeesPage() {
 
         <div className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
           <div className="overflow-x-auto">
-            <table className="w-full text-sm min-w-[820px]">
+            <table className="w-full text-sm min-w-[860px]">
               <thead>
                 <tr style={{ borderBottom: '1px solid #334155' }}>
-                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Receipt No.</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}></th>
                   <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
-                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Amount</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Total Paid</th>
                   <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Arrears</th>
                   <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Balance</th>
-                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Method</th>
-                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Term</th>
-                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Date</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Latest Term</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Payments</th>
                 </tr>
               </thead>
               <tbody>
-                {fees.length === 0 ? (
+                {studentGroups.length === 0 ? (
                   <tr>
-                    <td colSpan={8} className="px-6 py-8 text-center" style={{ color: '#475569' }}>
+                    <td colSpan={7} className="px-6 py-8 text-center" style={{ color: '#475569' }}>
                       No payments recorded yet. Click + Record Payment to add one.
                     </td>
                   </tr>
                 ) : (
-                  fees.map(fee => (
-                    <tr key={fee.id} className="cursor-pointer transition" style={{ borderBottom: '1px solid #1e293b' }}
-                      onClick={() => generateReceipt(fee)}
-                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
-                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
-                      <td className="px-6 py-4 font-mono" style={{ color: '#38bdf8' }}>{fee.receipt_number}</td>
-                      <td className="px-6 py-4">
-                        <div className="font-medium" style={{ color: '#e2e8f0' }}>{(fee.students as any)?.full_name}</div>
-                        <div className="text-xs" style={{ color: '#475569' }}>{(fee.students as any)?.learner_code}</div>
-                      </td>
-                      <td className="px-6 py-4 font-medium" style={{ color: '#4ade80' }}>GHS {fee.amount}</td>
-                      <td className="px-6 py-4 font-medium" style={{ color: Number(fee.arrears) > 0 ? '#f87171' : '#475569' }}>
-                        {Number(fee.arrears) > 0 ? `GHS ${fee.arrears}` : '—'}
-                      </td>
-                      <td className="px-6 py-4 font-medium" style={{ color: Number((fee as any).balance) > 0 ? '#f87171' : Number((fee as any).balance) < 0 ? '#facc15' : '#4ade80' }}>
-                        {Number((fee as any).balance) > 0
-                          ? `GHS ${(fee as any).balance} owing`
-                          : Number((fee as any).balance) < 0
-                          ? `GHS ${Math.abs((fee as any).balance)} credit`
-                          : 'Paid up'}
-                      </td>
-                      <td className="px-6 py-4 capitalize" style={{ color: '#94a3b8' }}>{fee.payment_method.replace('_', ' ')}</td>
-                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{fee.term} · {fee.academic_year}</td>
-                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{fee.payment_date}</td>
-                    </tr>
-                  ))
+                  studentGroups.map(group => {
+                    const isExpanded = expandedStudents.has(group.student_id)
+                    return (
+                      <>
+                        <tr key={group.student_id} className="cursor-pointer transition" style={{ borderBottom: '1px solid #1e293b' }}
+                          onClick={() => toggleExpand(group.student_id)}
+                          onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                          onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
+                          <td className="px-6 py-4" style={{ color: '#38bdf8' }}>
+                            {isExpanded ? '▾' : '▸'}
+                          </td>
+                          <td className="px-6 py-4">
+                            <div className="font-medium" style={{ color: '#e2e8f0' }}>{group.student?.full_name}</div>
+                            <div className="text-xs" style={{ color: '#475569' }}>{group.student?.learner_code}</div>
+                          </td>
+                          <td className="px-6 py-4 font-medium" style={{ color: '#4ade80' }}>GHS {group.totalPaid.toFixed(2)}</td>
+                          <td className="px-6 py-4 font-medium" style={{ color: group.latestArrears > 0 ? '#f87171' : '#475569' }}>
+                            {group.latestArrears > 0 ? `GHS ${group.latestArrears.toFixed(2)}` : '—'}
+                          </td>
+                          <td className="px-6 py-4 font-medium" style={{ color: group.latestBalance > 0 ? '#f87171' : group.latestBalance < 0 ? '#facc15' : '#4ade80' }}>
+                            {group.latestBalance > 0
+                              ? `GHS ${group.latestBalance.toFixed(2)} owing`
+                              : group.latestBalance < 0
+                              ? `GHS ${Math.abs(group.latestBalance).toFixed(2)} credit`
+                              : 'Paid up'}
+                          </td>
+                          <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{group.latestTerm} · {group.latestYear}</td>
+                          <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{group.payments.length}</td>
+                        </tr>
+                        {isExpanded && group.payments.map(fee => (
+                          <tr key={fee.id} className="cursor-pointer transition" style={{ borderBottom: '1px solid #1e293b', background: '#161f2e' }}
+                            onClick={() => generateReceipt(fee)}
+                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = '#161f2e'}>
+                            <td className="px-6 py-3"></td>
+                            <td className="px-6 py-3 font-mono text-xs" style={{ color: '#38bdf8' }}>{fee.receipt_number}</td>
+                            <td className="px-6 py-3 font-medium" style={{ color: '#4ade80' }}>GHS {fee.amount}</td>
+                            <td className="px-6 py-3 font-medium" style={{ color: Number(fee.arrears) > 0 ? '#f87171' : '#475569' }}>
+                              {Number(fee.arrears) > 0 ? `GHS ${fee.arrears}` : '—'}
+                            </td>
+                            <td className="px-6 py-3 font-medium" style={{ color: Number(fee.balance) > 0 ? '#f87171' : Number(fee.balance) < 0 ? '#facc15' : '#4ade80' }}>
+                              {Number(fee.balance) > 0
+                                ? `GHS ${fee.balance} owing`
+                                : Number(fee.balance) < 0
+                                ? `GHS ${Math.abs(fee.balance)} credit`
+                                : 'Paid up'}
+                            </td>
+                            <td className="px-6 py-3 text-xs" style={{ color: '#94a3b8' }}>
+                              {fee.term} · {fee.academic_year} · {fee.payment_method.replace('_', ' ')}
+                            </td>
+                            <td className="px-6 py-3 text-xs" style={{ color: '#64748b' }}>{fee.payment_date}</td>
+                          </tr>
+                        ))}
+                      </>
+                    )
+                  })
                 )}
               </tbody>
             </table>
