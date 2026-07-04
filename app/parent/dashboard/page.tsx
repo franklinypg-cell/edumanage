@@ -67,6 +67,7 @@ export default function ParentDashboardPage() {
   const [activeTab, setActiveTab] = useState<'biodata' | 'academics' | 'finance'>('biodata')
   const [displayClass, setDisplayClass] = useState('General / Unassigned')
   const [totalPaid, setTotalPaid] = useState(0)
+  const [currentBalance, setCurrentBalance] = useState(0)
 
   useEffect(() => {
     const fetchPortalData = async () => {
@@ -130,6 +131,9 @@ export default function ParentDashboardPage() {
           let paidSum = 0
           feeRecords.forEach((p: any) => { paidSum += Number(p.amount || 0) })
           setTotalPaid(paidSum)
+          // feeRecords is ordered by payment_date descending, so [0] is the most recent —
+          // its "balance" field holds the running balance as of that payment
+          setCurrentBalance(Number(feeRecords[0].balance) || 0)
         }
 
       } catch (err) {
@@ -197,6 +201,19 @@ export default function ParentDashboardPage() {
                   <td>School Fees Payment - ${receipt.term || 'Current Term'} (${receipt.academic_year || 'Current Year'})</td>
                   <td style="text-align: right; font-weight: bold;">GHS ${Number(receipt.amount || 0).toFixed(2)}</td>
                 </tr>
+                ${Number(receipt.arrears) > 0 ? `
+                <tr>
+                  <td style="color:#b91c1c;">Arrears Carried Forward (Previous Term)</td>
+                  <td style="text-align: right; font-weight: bold; color:#b91c1c;">GHS ${Number(receipt.arrears).toFixed(2)}</td>
+                </tr>` : ''}
+                ${Number(receipt.balance) > 0 ? `
+                <tr>
+                  <td style="color:#b45309;">Balance Remaining This Term</td>
+                  <td style="text-align: right; font-weight: bold; color:#b45309;">GHS ${Number(receipt.balance).toFixed(2)}</td>
+                </tr>` : Number(receipt.term_fee_expected) > 0 ? `
+                <tr>
+                  <td style="color:#15803d;" colspan="2">PAID IN FULL FOR THIS TERM</td>
+                </tr>` : ''}
               </tbody>
             </table>
             <div class="footer">
@@ -398,10 +415,38 @@ export default function ParentDashboardPage() {
         {activeTab === 'finance' && (
           <div className="space-y-6">
 
-            <div className="p-4 rounded-xl border max-w-sm" style={{ background: '#111827', borderColor: '#22c55e40' }}>
-              <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#22c55e' }}>Total Fees Paid</p>
-              <p className="text-xl font-bold mt-1" style={{ color: '#e2e8f0' }}>GHS {totalPaid.toFixed(2)}</p>
-              <p className="text-xs mt-1" style={{ color: '#475569' }}>Across all recorded payments</p>
+            <div className="flex flex-col sm:flex-row gap-4">
+              <div className="p-4 rounded-xl border max-w-sm flex-1" style={{ background: '#111827', borderColor: '#22c55e40' }}>
+                <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: '#22c55e' }}>Total Fees Paid</p>
+                <p className="text-xl font-bold mt-1" style={{ color: '#e2e8f0' }}>GHS {totalPaid.toFixed(2)}</p>
+                <p className="text-xs mt-1" style={{ color: '#475569' }}>Across all recorded payments</p>
+              </div>
+
+              <div
+                className="p-4 rounded-xl border max-w-sm flex-1"
+                style={{
+                  background: '#111827',
+                  borderColor: currentBalance > 0 ? '#f8717140' : '#22c55e40',
+                }}
+              >
+                <p className="text-[10px] font-medium uppercase tracking-wider" style={{ color: currentBalance > 0 ? '#f87171' : '#22c55e' }}>
+                  {currentBalance > 0 ? 'Outstanding Balance' : currentBalance < 0 ? 'Credit Balance' : 'Payment Status'}
+                </p>
+                <p className="text-xl font-bold mt-1" style={{ color: '#e2e8f0' }}>
+                  {currentBalance > 0
+                    ? `GHS ${currentBalance.toFixed(2)}`
+                    : currentBalance < 0
+                    ? `GHS ${Math.abs(currentBalance).toFixed(2)}`
+                    : 'Fully Paid'}
+                </p>
+                <p className="text-xs mt-1" style={{ color: '#475569' }}>
+                  {currentBalance > 0
+                    ? 'Still owed for the current term'
+                    : currentBalance < 0
+                    ? 'Overpaid — carried as credit'
+                    : 'No outstanding fees right now'}
+                </p>
+              </div>
             </div>
 
             <h4 className="text-xs font-medium uppercase tracking-wider" style={{ color: '#64748b' }}>Payment History</h4>
@@ -416,15 +461,29 @@ export default function ParentDashboardPage() {
             ) : (
               <div className="space-y-3">
                 {payments.map((payment) => (
-                  <div key={payment.id} className="p-4 rounded-xl border flex justify-between items-center gap-4" style={{ background: '#1e293b', borderColor: '#334155' }}>
+                  <div key={payment.id} className="p-4 rounded-xl border flex flex-col sm:flex-row justify-between sm:items-center gap-4" style={{ background: '#1e293b', borderColor: '#334155' }}>
                     <div>
-                      <div className="flex items-center gap-2">
+                      <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-xs font-bold font-mono px-1.5 py-0.5 rounded" style={{ color: '#4ade80', background: 'rgba(20,83,45,0.3)' }}>
                           + GHS {Number(payment.amount || 0).toFixed(2)}
                         </span>
                         <p className="text-xs font-semibold" style={{ color: '#e2e8f0' }}>
                           {payment.term || 'General Fee'}
                         </p>
+                        {Number(payment.arrears) > 0 && (
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ color: '#f87171', background: 'rgba(127,29,29,0.2)' }}>
+                            Arrears: GHS {Number(payment.arrears).toFixed(2)}
+                          </span>
+                        )}
+                        {Number(payment.balance) > 0 ? (
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ color: '#fbbf24', background: 'rgba(120,53,15,0.2)' }}>
+                            Balance owing: GHS {Number(payment.balance).toFixed(2)}
+                          </span>
+                        ) : Number(payment.term_fee_expected) > 0 ? (
+                          <span className="text-[10px] font-medium px-1.5 py-0.5 rounded" style={{ color: '#4ade80', background: 'rgba(20,83,45,0.2)' }}>
+                            Paid in full
+                          </span>
+                        ) : null}
                       </div>
                       <p className="text-[11px] mt-1" style={{ color: '#64748b' }}>
                         {new Date(payment.payment_date).toLocaleDateString()} &nbsp;&middot;&nbsp; {payment.academic_year || 'N/A'} &nbsp;&middot;&nbsp; {payment.payment_method || 'Cash'}
@@ -432,7 +491,7 @@ export default function ParentDashboardPage() {
                     </div>
                     <button
                       onClick={() => handlePrintReceipt(payment)}
-                      className="px-3 py-1.5 rounded-lg text-xs font-medium border transition"
+                      className="px-3 py-1.5 rounded-lg text-xs font-medium border transition self-start sm:self-auto"
                       style={{ borderColor: '#334155', color: '#38bdf8' }}
                     >
                       Print Receipt
