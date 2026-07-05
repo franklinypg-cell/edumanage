@@ -66,23 +66,23 @@ export default function TeachersPage() {
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 flex items-center justify-center">
+      <div className="md:ml-56 flex-1 w-full flex items-center justify-center pt-14 md:pt-0">
         <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
-        <div className="flex justify-between items-center mb-6">
+      <div className="md:ml-56 flex-1 w-full p-4 md:p-8 pt-20 md:pt-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Teachers</h2>
           <button
             onClick={() => { setShowForm(!showForm); setEditId(null); setForm({ full_name: '', staff_id: '', phone: '', qualification: '' }) }}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition w-full sm:w-auto"
             style={{ background: '#38bdf8', color: '#0f172a' }}
           >
             + Add Teacher
@@ -101,7 +101,7 @@ export default function TeachersPage() {
                   className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle}
                   placeholder="e.g. Mr. Kofi Mensah" required />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Staff ID</label>
                   <input type="text" value={form.staff_id} onChange={e => update('staff_id', e.target.value)}
@@ -138,47 +138,49 @@ export default function TeachersPage() {
         )}
 
         <div className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: '1px solid #334155' }}>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Name</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Staff ID</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Phone</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Qualification</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Actions</th>
-              </tr>
-            </thead>
-            <tbody>
-              {teachers.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center" style={{ color: '#475569' }}>
-                    No teachers added yet. Click + Add Teacher to get started.
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[640px]">
+              <thead>
+                <tr style={{ borderBottom: '1px solid #334155' }}>
+                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Name</th>
+                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Staff ID</th>
+                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Phone</th>
+                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Qualification</th>
+                  <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Actions</th>
                 </tr>
-              ) : (
-                teachers.map(t => (
-                  <tr key={t.id} className="transition" style={{ borderBottom: '1px solid #1e293b' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
-                    <td className="px-6 py-4 font-medium" style={{ color: '#e2e8f0' }}>{t.full_name}</td>
-                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{t.staff_id || '—'}</td>
-                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{t.phone || '—'}</td>
-                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{t.qualification || '—'}</td>
-                    <td className="px-6 py-4 flex gap-3">
-                      <button onClick={() => handleEdit(t)}
-                        className="text-sm hover:underline" style={{ color: '#38bdf8' }}>
-                        Edit
-                      </button>
-                      <button onClick={() => handleDelete(t.id)}
-                        className="text-sm hover:underline" style={{ color: '#f87171' }}>
-                        Remove
-                      </button>
+              </thead>
+              <tbody>
+                {teachers.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-4 md:px-6 py-8 text-center" style={{ color: '#475569' }}>
+                      No teachers added yet. Click + Add Teacher to get started.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  teachers.map(t => (
+                    <tr key={t.id} className="transition" style={{ borderBottom: '1px solid #1e293b' }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
+                      <td className="px-4 md:px-6 py-4 font-medium whitespace-nowrap" style={{ color: '#e2e8f0' }}>{t.full_name}</td>
+                      <td className="px-4 md:px-6 py-4 whitespace-nowrap" style={{ color: '#94a3b8' }}>{t.staff_id || '—'}</td>
+                      <td className="px-4 md:px-6 py-4 whitespace-nowrap" style={{ color: '#94a3b8' }}>{t.phone || '—'}</td>
+                      <td className="px-4 md:px-6 py-4 whitespace-nowrap" style={{ color: '#94a3b8' }}>{t.qualification || '—'}</td>
+                      <td className="px-4 md:px-6 py-4 flex gap-3 whitespace-nowrap">
+                        <button onClick={() => handleEdit(t)}
+                          className="text-sm hover:underline" style={{ color: '#38bdf8' }}>
+                          Edit
+                        </button>
+                        <button onClick={() => handleDelete(t.id)}
+                          className="text-sm hover:underline" style={{ color: '#f87171' }}>
+                          Remove
+                        </button>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
