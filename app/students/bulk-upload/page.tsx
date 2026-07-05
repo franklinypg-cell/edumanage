@@ -218,34 +218,34 @@ export default function BulkUploadPage() {
   const invalidCount = rows.length - validCount
 
   return (
-    <div className="flex min-h-screen bg-indigo-50/40">
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
-        <Link href="/students" className="text-sm mb-6 block" style={{ color: '#4f46e5' }}>
+      <div className="md:ml-56 flex-1 w-full p-4 md:p-8 pt-20 md:pt-8">
+        <Link href="/students" className="text-sm mb-6 block" style={{ color: '#38bdf8' }}>
           ← Back to Students
         </Link>
-        <h2 className="text-lg font-medium mb-6" style={{ color: '#1e1b4b' }}>Bulk Student Upload</h2>
+        <h2 className="text-lg font-medium mb-6" style={{ color: '#e2e8f0' }}>Bulk Student Upload</h2>
 
-        <div className="rounded-xl p-6 max-w-4xl bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
+        <div className="rounded-xl p-4 md:p-6 max-w-4xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
           {step === 'upload' && (
             <div className="space-y-6">
               <div>
-                <h3 className="text-sm font-semibold mb-2" style={{ color: '#1e1b4b' }}>Step 1 — Download the template</h3>
-                <p className="text-sm mb-3" style={{ color: '#64748b' }}>
+                <h3 className="text-sm font-semibold mb-2" style={{ color: '#e2e8f0' }}>Step 1 — Download the template</h3>
+                <p className="text-sm mb-3" style={{ color: '#94a3b8' }}>
                   The template includes an example row and an Instructions sheet listing valid classes, gender, and boarding status values pulled from your current setup.
                 </p>
                 <button
                   onClick={downloadTemplate}
-                  className="px-4 py-2 rounded-lg text-sm font-medium transition"
-                  style={{ background: '#4f46e5', color: '#ffffff' }}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition w-full sm:w-auto"
+                  style={{ background: '#38bdf8', color: '#0f172a' }}
                 >
                   Download Template (.xlsx)
                 </button>
               </div>
 
-              <div className="pt-4 border-t" style={{ borderColor: '#e0e7ff' }}>
-                <h3 className="text-sm font-semibold mb-2" style={{ color: '#1e1b4b' }}>Step 2 — Fill it in and upload</h3>
-                <p className="text-sm mb-3" style={{ color: '#64748b' }}>
+              <div className="pt-4 border-t" style={{ borderColor: '#334155' }}>
+                <h3 className="text-sm font-semibold mb-2" style={{ color: '#e2e8f0' }}>Step 2 — Fill it in and upload</h3>
+                <p className="text-sm mb-3" style={{ color: '#94a3b8' }}>
                   Fields marked * are required. You'll get a chance to review and fix any problems before anything is saved.
                 </p>
                 <input
@@ -255,48 +255,49 @@ export default function BulkUploadPage() {
                   onChange={handleFileSelect}
                   disabled={parsing}
                   className="text-sm"
+                  style={{ color: '#e2e8f0' }}
                 />
-                {parsing && <p className="text-sm mt-2" style={{ color: '#4f46e5' }}>Reading file…</p>}
+                {parsing && <p className="text-sm mt-2" style={{ color: '#38bdf8' }}>Reading file…</p>}
               </div>
             </div>
           )}
 
           {step === 'preview' && (
             <div className="space-y-4">
-              <div className="flex items-center justify-between">
+              <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-2">
                 <div>
-                  <h3 className="text-sm font-semibold" style={{ color: '#1e1b4b' }}>Review — {fileName}</h3>
-                  <p className="text-sm" style={{ color: '#64748b' }}>
-                    {rows.length} rows found · <span style={{ color: '#16a34a' }}>{validCount} ready to import</span>
-                    {invalidCount > 0 && <> · <span style={{ color: '#dc2626' }}>{invalidCount} with errors</span></>}
+                  <h3 className="text-sm font-semibold" style={{ color: '#e2e8f0' }}>Review — {fileName}</h3>
+                  <p className="text-sm" style={{ color: '#94a3b8' }}>
+                    {rows.length} rows found · <span style={{ color: '#4ade80' }}>{validCount} ready to import</span>
+                    {invalidCount > 0 && <> · <span style={{ color: '#f87171' }}>{invalidCount} with errors</span></>}
                   </p>
                 </div>
-                <button onClick={reset} className="text-sm" style={{ color: '#4f46e5' }}>Start over</button>
+                <button onClick={reset} className="text-sm text-left sm:text-right" style={{ color: '#38bdf8' }}>Start over</button>
               </div>
 
-              <div className="max-h-96 overflow-y-auto rounded-lg border" style={{ borderColor: '#e0e7ff' }}>
-                <table className="w-full text-sm">
-                  <thead className="sticky top-0 bg-indigo-50">
+              <div className="max-h-96 overflow-y-auto overflow-x-auto rounded-lg border" style={{ borderColor: '#334155' }}>
+                <table className="w-full text-sm min-w-[520px]">
+                  <thead className="sticky top-0" style={{ background: '#0f172a' }}>
                     <tr>
-                      <th className="text-left px-3 py-2" style={{ color: '#64748b' }}>Row</th>
-                      <th className="text-left px-3 py-2" style={{ color: '#64748b' }}>Name</th>
-                      <th className="text-left px-3 py-2" style={{ color: '#64748b' }}>Class</th>
-                      <th className="text-left px-3 py-2" style={{ color: '#64748b' }}>Status</th>
+                      <th className="text-left px-3 py-2" style={{ color: '#475569' }}>Row</th>
+                      <th className="text-left px-3 py-2" style={{ color: '#475569' }}>Name</th>
+                      <th className="text-left px-3 py-2" style={{ color: '#475569' }}>Class</th>
+                      <th className="text-left px-3 py-2" style={{ color: '#475569' }}>Status</th>
                     </tr>
                   </thead>
                   <tbody>
                     {rows.map(r => (
-                      <tr key={r.rowNumber} className="border-t" style={{ borderColor: '#f1f5f9' }}>
-                        <td className="px-3 py-2" style={{ color: '#64748b' }}>{r.rowNumber}</td>
-                        <td className="px-3 py-2">{r.data.full_name || <em style={{ color: '#dc2626' }}>missing</em>}</td>
-                        <td className="px-3 py-2">{r.data.class || '—'}</td>
+                      <tr key={r.rowNumber} className="border-t" style={{ borderColor: '#1e293b' }}>
+                        <td className="px-3 py-2 whitespace-nowrap" style={{ color: '#94a3b8' }}>{r.rowNumber}</td>
+                        <td className="px-3 py-2 whitespace-nowrap" style={{ color: '#e2e8f0' }}>{r.data.full_name || <em style={{ color: '#f87171' }}>missing</em>}</td>
+                        <td className="px-3 py-2 whitespace-nowrap" style={{ color: '#e2e8f0' }}>{r.data.class || '—'}</td>
                         <td className="px-3 py-2">
                           {r.errors.length > 0 ? (
-                            <span style={{ color: '#dc2626' }}>{r.errors.join('; ')}</span>
+                            <span style={{ color: '#f87171' }}>{r.errors.join('; ')}</span>
                           ) : r.warnings.length > 0 ? (
-                            <span style={{ color: '#d97706' }}>OK — {r.warnings.join('; ')}</span>
+                            <span style={{ color: '#facc15' }}>OK — {r.warnings.join('; ')}</span>
                           ) : (
-                            <span style={{ color: '#16a34a' }}>Ready</span>
+                            <span style={{ color: '#4ade80' }}>Ready</span>
                           )}
                         </td>
                       </tr>
@@ -305,26 +306,27 @@ export default function BulkUploadPage() {
                 </table>
               </div>
 
-              <label className="flex items-center gap-2 text-sm" style={{ color: '#64748b' }}>
+              <label className="flex items-start gap-2 text-sm" style={{ color: '#94a3b8' }}>
                 <input
                   type="checkbox"
                   checked={isTestBatch}
                   onChange={e => setIsTestBatch(e.target.checked)}
+                  className="mt-1"
                 />
-                This is a test batch — use <span className="font-mono">TEST-</span> prefixed learner codes so it's easy to find and delete later
+                <span>This is a test batch — use <span className="font-mono">TEST-</span> prefixed learner codes so it's easy to find and delete later</span>
               </label>
 
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button
                   onClick={importValidRows}
                   disabled={validCount === 0}
-                  className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
-                  style={{ background: isTestBatch ? '#d97706' : '#4f46e5', color: '#ffffff' }}
+                  className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 w-full sm:w-auto"
+                  style={{ background: isTestBatch ? '#f59e0b' : '#38bdf8', color: '#0f172a' }}
                 >
                   Import {validCount} valid row{validCount === 1 ? '' : 's'}{isTestBatch ? ' (test)' : ''}
                 </button>
                 {invalidCount > 0 && (
-                  <p className="text-sm self-center" style={{ color: '#64748b' }}>
+                  <p className="text-sm self-center" style={{ color: '#94a3b8' }}>
                     Fix the {invalidCount} row{invalidCount === 1 ? '' : 's'} with errors in Excel and re-upload to include them.
                   </p>
                 )}
@@ -334,14 +336,14 @@ export default function BulkUploadPage() {
 
           {step === 'importing' && (
             <div className="text-center py-10">
-              <p className="text-sm mb-3" style={{ color: '#1e1b4b' }}>
+              <p className="text-sm mb-3" style={{ color: '#e2e8f0' }}>
                 Importing batch {importProgress.current} of {importProgress.total}…
               </p>
-              <div className="w-full h-2 rounded-full bg-indigo-100 overflow-hidden max-w-xs mx-auto">
+              <div className="w-full h-2 rounded-full overflow-hidden max-w-xs mx-auto" style={{ background: '#334155' }}>
                 <div
                   className="h-full transition-all"
                   style={{
-                    background: '#4f46e5',
+                    background: '#38bdf8',
                     width: `${(importProgress.current / Math.max(importProgress.total, 1)) * 100}%`,
                   }}
                 />
@@ -351,34 +353,34 @@ export default function BulkUploadPage() {
 
           {step === 'done' && importResults && (
             <div className="text-center py-8">
-              <div className="text-4xl mb-4" style={{ color: '#16a34a' }}>✓</div>
-              <h3 className="text-lg font-semibold mb-2" style={{ color: '#1e1b4b' }}>Import complete</h3>
-              <p className="text-sm mb-4" style={{ color: '#64748b' }}>
+              <div className="text-4xl mb-4" style={{ color: '#4ade80' }}>✓</div>
+              <h3 className="text-lg font-semibold mb-2" style={{ color: '#e2e8f0' }}>Import complete</h3>
+              <p className="text-sm mb-4" style={{ color: '#94a3b8' }}>
                 {importResults.successCount} student{importResults.successCount === 1 ? '' : 's'} enrolled successfully.
               </p>
               {importResults.failures.length > 0 && (
-                <div className="text-left max-w-lg mx-auto mb-6 rounded-lg p-4" style={{ background: '#fef2f2', border: '1px solid #fecaca' }}>
-                  <p className="text-sm font-medium mb-2" style={{ color: '#dc2626' }}>
+                <div className="text-left max-w-lg mx-auto mb-6 rounded-lg p-4" style={{ background: '#2d1b1b', border: '1px solid #7f1d1d' }}>
+                  <p className="text-sm font-medium mb-2" style={{ color: '#f87171' }}>
                     {importResults.failures.length} row{importResults.failures.length === 1 ? '' : 's'} failed to save:
                   </p>
-                  <ul className="text-sm space-y-1" style={{ color: '#7f1d1d' }}>
+                  <ul className="text-sm space-y-1" style={{ color: '#fca5a5' }}>
                     {importResults.failures.map(f => (
                       <li key={f.row}>Row {f.row} ({f.name}): {f.reason}</li>
                     ))}
                   </ul>
                 </div>
               )}
-              <div className="flex gap-3 justify-center">
+              <div className="flex flex-col sm:flex-row gap-3 justify-center">
                 <button
                   onClick={reset}
                   className="px-4 py-2 rounded-lg text-sm font-medium transition"
-                  style={{ background: '#4f46e5', color: '#ffffff' }}
+                  style={{ background: '#38bdf8', color: '#0f172a' }}
                 >
                   Upload More
                 </button>
                 <Link href="/students"
                   className="px-4 py-2 rounded-lg text-sm font-medium transition"
-                  style={{ border: '1px solid #c7d2fe', color: '#4f46e5' }}
+                  style={{ border: '1px solid #334155', color: '#38bdf8' }}
                 >
                   View All Students
                 </Link>
