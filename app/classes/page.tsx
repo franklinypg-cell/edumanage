@@ -45,11 +45,23 @@ export default function ClassesPage() {
   const handleAdd = async (e: React.FormEvent) => {
     e.preventDefault()
     setSaving(true)
+
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('school_id')
+      .eq('id', user?.id)
+      .single()
+
+    console.log('DEBUG — user:', user?.id, 'profile:', profile, 'profileError:', profileError)
+
     const { error } = await supabase.from('classes').insert({
       name: form.name,
       level: form.level,
+      school_id: profile?.school_id,
     })
     if (error) {
+      console.log('DEBUG — insert error:', error)
       alert('Error adding class. Please try again.')
     } else {
       setShowForm(false)
