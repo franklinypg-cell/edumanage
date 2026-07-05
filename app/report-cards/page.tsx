@@ -146,23 +146,23 @@ export default function ReportCardsPage() {
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 flex items-center justify-center">
+      <div className="md:ml-56 flex-1 w-full flex items-center justify-center pt-14 md:pt-0">
         <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a', fontFamily: 'Poppins, sans-serif' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a', fontFamily: 'Poppins, sans-serif' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
-        <div className="flex justify-between items-center mb-6">
+      <div className="md:ml-56 flex-1 w-full p-4 md:p-8 pt-20 md:pt-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Report Cards</h2>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition w-full sm:w-auto"
             style={{ background: '#38bdf8', color: '#0f172a' }}
           >
             {showForm ? 'Cancel Upload' : '+ Upload Report Card'}
@@ -183,7 +183,7 @@ export default function ReportCardsPage() {
                   required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Term</label>
                   <select value={form.term} onChange={e => update('term', e.target.value)}
@@ -230,81 +230,83 @@ export default function ReportCardsPage() {
             {sortedClasses.map(className => (
               <div key={className} className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
                 {/* Class Header */}
-                <div className="px-6 py-3" style={{ background: '#0f172a', borderBottom: '1px solid #334155' }}>
+                <div className="px-4 md:px-6 py-3" style={{ background: '#0f172a', borderBottom: '1px solid #334155' }}>
                   <span className="text-sm font-semibold" style={{ color: '#38bdf8' }}>{className}</span>
                   <span className="text-xs ml-2" style={{ color: '#475569' }}>
                     {grouped[className].length} report card{grouped[className].length !== 1 ? 's' : ''}
                   </span>
                 </div>
                 {/* Table */}
-                <table className="w-full text-sm">
-                  <thead>
-                    <tr style={{ borderBottom: '1px solid #334155' }}>
-                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}></th>
-                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
-                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Report Cards</th>
-                      <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Most Recent</th>
-                      <th className="text-right px-6 py-3 font-medium" style={{ color: '#475569' }}></th>
-                    </tr>
-                  </thead>
-                  <tbody>
-                    {groupByStudent(grouped[className]).map(([studentId, group]) => {
-                      const isExpanded = expandedStudents.has(studentId)
-                      const sName = group.student?.full_name || 'Unknown Student'
-                      const mostRecent = group.cards[0]
-                      return (
-                        <Fragment key={studentId}>
-                          <tr className="cursor-pointer transition" style={{ borderBottom: '1px solid #1e293b' }}
-                            onClick={() => toggleExpand(studentId)}
-                            onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
-                            onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
-                            <td className="px-6 py-4" style={{ color: '#38bdf8' }}>
-                              {isExpanded ? '▾' : '▸'}
-                            </td>
-                            <td className="px-6 py-4">
-                              <div className="font-medium" style={{ color: '#e2e8f0' }}>{sName}</div>
-                              <div className="text-xs" style={{ color: '#475569' }}>{group.student?.learner_code}</div>
-                            </td>
-                            <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{group.cards.length}</td>
-                            <td className="px-6 py-4" style={{ color: '#94a3b8' }}>
-                              {mostRecent.term} · {mostRecent.academic_year}
-                            </td>
-                            <td className="px-6 py-4"></td>
-                          </tr>
-                          {isExpanded && group.cards.map((rc: any) => (
-                            <tr key={rc.id} className="transition" style={{ borderBottom: '1px solid #1e293b', background: '#161f2e' }}
+                <div className="overflow-x-auto">
+                  <table className="w-full text-sm min-w-[640px]">
+                    <thead>
+                      <tr style={{ borderBottom: '1px solid #334155' }}>
+                        <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}></th>
+                        <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
+                        <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Report Cards</th>
+                        <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Most Recent</th>
+                        <th className="text-right px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}></th>
+                      </tr>
+                    </thead>
+                    <tbody>
+                      {groupByStudent(grouped[className]).map(([studentId, group]) => {
+                        const isExpanded = expandedStudents.has(studentId)
+                        const sName = group.student?.full_name || 'Unknown Student'
+                        const mostRecent = group.cards[0]
+                        return (
+                          <Fragment key={studentId}>
+                            <tr className="cursor-pointer transition" style={{ borderBottom: '1px solid #1e293b' }}
+                              onClick={() => toggleExpand(studentId)}
                               onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
-                              onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = '#161f2e'}>
-                              <td className="px-6 py-3"></td>
-                              <td className="px-6 py-3 text-xs" style={{ color: '#64748b' }}>
-                                {new Date(rc.uploaded_at).toLocaleDateString()}
+                              onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
+                              <td className="px-4 md:px-6 py-4" style={{ color: '#38bdf8' }}>
+                                {isExpanded ? '▾' : '▸'}
                               </td>
-                              <td className="px-6 py-3" style={{ color: '#94a3b8' }} colSpan={2}>
-                                {rc.term} · {rc.academic_year}
+                              <td className="px-4 md:px-6 py-4 whitespace-nowrap">
+                                <div className="font-medium" style={{ color: '#e2e8f0' }}>{sName}</div>
+                                <div className="text-xs" style={{ color: '#475569' }}>{group.student?.learner_code}</div>
                               </td>
-                              <td className="px-6 py-3 text-right">
-                                <div className="flex items-center justify-end gap-4">
-                                  <a href={rc.file_url} target="_blank" rel="noopener noreferrer"
-                                    className="text-sm hover:underline font-medium" style={{ color: '#38bdf8' }}
-                                    onClick={e => e.stopPropagation()}>
-                                    View PDF
-                                  </a>
-                                  <button
-                                    onClick={(e) => { e.stopPropagation(); handleDelete(rc.id, rc.file_url, sName) }}
-                                    disabled={deletingId === rc.id}
-                                    className="text-sm font-medium hover:underline disabled:opacity-40 transition"
-                                    style={{ color: '#f87171' }}>
-                                    {deletingId === rc.id ? 'Deleting...' : 'Delete'}
-                                  </button>
-                                </div>
+                              <td className="px-4 md:px-6 py-4" style={{ color: '#94a3b8' }}>{group.cards.length}</td>
+                              <td className="px-4 md:px-6 py-4 whitespace-nowrap" style={{ color: '#94a3b8' }}>
+                                {mostRecent.term} · {mostRecent.academic_year}
                               </td>
+                              <td className="px-4 md:px-6 py-4"></td>
                             </tr>
-                          ))}
-                        </Fragment>
-                      )
-                    })}
-                  </tbody>
-                </table>
+                            {isExpanded && group.cards.map((rc: any) => (
+                              <tr key={rc.id} className="transition" style={{ borderBottom: '1px solid #1e293b', background: '#161f2e' }}
+                                onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                                onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = '#161f2e'}>
+                                <td className="px-4 md:px-6 py-3"></td>
+                                <td className="px-4 md:px-6 py-3 text-xs whitespace-nowrap" style={{ color: '#64748b' }}>
+                                  {new Date(rc.uploaded_at).toLocaleDateString()}
+                                </td>
+                                <td className="px-4 md:px-6 py-3 whitespace-nowrap" style={{ color: '#94a3b8' }} colSpan={2}>
+                                  {rc.term} · {rc.academic_year}
+                                </td>
+                                <td className="px-4 md:px-6 py-3 text-right">
+                                  <div className="flex items-center justify-end gap-4">
+                                    <a href={rc.file_url} target="_blank" rel="noopener noreferrer"
+                                      className="text-sm hover:underline font-medium" style={{ color: '#38bdf8' }}
+                                      onClick={e => e.stopPropagation()}>
+                                      View PDF
+                                    </a>
+                                    <button
+                                      onClick={(e) => { e.stopPropagation(); handleDelete(rc.id, rc.file_url, sName) }}
+                                      disabled={deletingId === rc.id}
+                                      className="text-sm font-medium hover:underline disabled:opacity-40 transition"
+                                      style={{ color: '#f87171' }}>
+                                      {deletingId === rc.id ? 'Deleting...' : 'Delete'}
+                                    </button>
+                                  </div>
+                                </td>
+                              </tr>
+                            ))}
+                          </Fragment>
+                        )
+                      })}
+                    </tbody>
+                  </table>
+                </div>
               </div>
             ))}
           </div>

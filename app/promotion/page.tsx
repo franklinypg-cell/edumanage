@@ -95,9 +95,9 @@ export default function PromotionPage() {
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
+      <div className="md:ml-56 flex-1 w-full p-4 md:p-8 pt-20 md:pt-8">
         <div className="mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Student Promotion</h2>
           <p className="text-sm mt-1" style={{ color: '#475569' }}>Promote students to the next class at the end of the academic year.</p>
@@ -110,7 +110,7 @@ export default function PromotionPage() {
         )}
 
         <div className="rounded-xl p-6 mb-6 max-w-2xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-          <div className="grid grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
             <div>
               <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>From Class</label>
               <select value={selectedClass} onChange={e => handleClassChange(e.target.value)}
@@ -136,51 +136,53 @@ export default function PromotionPage() {
         {students.length > 0 && (
           <>
             <div className="rounded-xl overflow-hidden mb-4" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-              <div className="px-6 py-3 flex justify-between items-center" style={{ borderBottom: '1px solid #334155' }}>
+              <div className="px-4 md:px-6 py-3 flex flex-col sm:flex-row sm:justify-between sm:items-center gap-2" style={{ borderBottom: '1px solid #334155' }}>
                 <span className="text-sm" style={{ color: '#64748b' }}>
                   {students.length} students — {selected.size} selected for promotion
                 </span>
-                <button onClick={toggleAll} className="text-sm hover:underline" style={{ color: '#38bdf8' }}>
+                <button onClick={toggleAll} className="text-sm hover:underline text-left sm:text-right" style={{ color: '#38bdf8' }}>
                   {selected.size === students.length ? 'Deselect All' : 'Select All'}
                 </button>
               </div>
-              <table className="w-full text-sm">
-                <thead>
-                  <tr style={{ borderBottom: '1px solid #334155' }}>
-                    <th className="px-6 py-3 w-10"></th>
-                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
-                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Learner Code</th>
-                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Gender</th>
-                    <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Status</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {students.map(s => (
-                    <tr key={s.id} className="transition" style={{
-                      borderBottom: '1px solid #1e293b',
-                      background: selected.has(s.id) ? '#0f2744' : 'transparent'
-                    }}>
-                      <td className="px-6 py-4">
-                        <input type="checkbox" checked={selected.has(s.id)}
-                          onChange={() => toggleStudent(s.id)} className="rounded" />
-                      </td>
-                      <td className="px-6 py-4 font-medium" style={{ color: '#e2e8f0' }}>{s.full_name}</td>
-                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.learner_code}</td>
-                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.gender}</td>
-                      <td className="px-6 py-4 text-xs">
-                        {selected.has(s.id)
-                          ? <span style={{ color: '#38bdf8' }}>→ {targetClass || '...'}</span>
-                          : <span style={{ color: '#f97316' }}>Staying in {selectedClass}</span>
-                        }
-                      </td>
+              <div className="overflow-x-auto">
+                <table className="w-full text-sm min-w-[560px]">
+                  <thead>
+                    <tr style={{ borderBottom: '1px solid #334155' }}>
+                      <th className="px-4 md:px-6 py-3 w-10"></th>
+                      <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
+                      <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Learner Code</th>
+                      <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Gender</th>
+                      <th className="text-left px-4 md:px-6 py-3 font-medium" style={{ color: '#475569' }}>Status</th>
                     </tr>
-                  ))}
-                </tbody>
-              </table>
+                  </thead>
+                  <tbody>
+                    {students.map(s => (
+                      <tr key={s.id} className="transition" style={{
+                        borderBottom: '1px solid #1e293b',
+                        background: selected.has(s.id) ? '#0f2744' : 'transparent'
+                      }}>
+                        <td className="px-4 md:px-6 py-4">
+                          <input type="checkbox" checked={selected.has(s.id)}
+                            onChange={() => toggleStudent(s.id)} className="rounded" />
+                        </td>
+                        <td className="px-4 md:px-6 py-4 font-medium whitespace-nowrap" style={{ color: '#e2e8f0' }}>{s.full_name}</td>
+                        <td className="px-4 md:px-6 py-4 whitespace-nowrap" style={{ color: '#94a3b8' }}>{s.learner_code}</td>
+                        <td className="px-4 md:px-6 py-4 whitespace-nowrap" style={{ color: '#94a3b8' }}>{s.gender}</td>
+                        <td className="px-4 md:px-6 py-4 text-xs whitespace-nowrap">
+                          {selected.has(s.id)
+                            ? <span style={{ color: '#38bdf8' }}>→ {targetClass || '...'}</span>
+                            : <span style={{ color: '#f97316' }}>Staying in {selectedClass}</span>
+                          }
+                        </td>
+                      </tr>
+                    ))}
+                  </tbody>
+                </table>
+              </div>
             </div>
 
             <button onClick={handlePromote} disabled={promoting || selected.size === 0}
-              className="px-8 py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-50"
+              className="px-8 py-2.5 rounded-lg text-sm font-medium transition disabled:opacity-50 w-full sm:w-auto"
               style={{ background: '#38bdf8', color: '#0f172a' }}>
               {promoting ? 'Promoting...' : `Promote ${selected.size} Student${selected.size !== 1 ? 's' : ''} →`}
             </button>
