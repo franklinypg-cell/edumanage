@@ -56,6 +56,14 @@ export default function NewStudentPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setLoading(true)
+
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('school_id')
+      .eq('id', user?.id)
+      .single()
+
     const learner_code = await generateLearnerCode()
     const { error } = await supabase.from('students').insert({
       full_name: form.full_name,
@@ -76,6 +84,7 @@ export default function NewStudentPage() {
       class_teacher: form.class_teacher,
       learner_code,
       status: 'active',
+      school_id: profile?.school_id,
     })
     if (error) {
       console.error('Enrollment error:', error)
