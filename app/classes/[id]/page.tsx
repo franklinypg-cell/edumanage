@@ -60,9 +60,9 @@ export default function ClassDetailPage() {
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen w-full overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 flex items-center justify-center">
+      <div className="md:ml-56 flex-1 flex items-center justify-center">
         <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
@@ -71,10 +71,10 @@ export default function ClassDetailPage() {
   const teacher = cls?.teachers
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen w-full overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
-        <div className="flex items-center gap-3 mb-6">
+      <div className="md:ml-56 flex-1 p-4 md:p-8">
+        <div className="flex flex-wrap items-center gap-3 mb-6">
           <Link href="/classes" className="text-sm" style={{ color: '#475569' }}>← Classes</Link>
           <span style={{ color: '#334155' }}>/</span>
           <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>{cls?.name}</h2>
@@ -84,9 +84,9 @@ export default function ClassDetailPage() {
           </span>
         </div>
 
-        <div className="rounded-xl p-6 mb-6" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-          <div className="flex justify-between items-start">
-            <div className="grid grid-cols-2 gap-8">
+        <div className="rounded-xl p-4 md:p-6 mb-6" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+          <div className="flex flex-col md:flex-row justify-between items-start gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 md:gap-8 w-full md:w-auto">
               <div>
                 <p className="text-xs mb-1" style={{ color: '#475569' }}>Level</p>
                 <p className="text-sm font-medium" style={{ color: '#cbd5e1' }}>{cls?.level}</p>
@@ -106,69 +106,73 @@ export default function ClassDetailPage() {
               </div>
             </div>
             <button onClick={() => setAssigningTeacher(!assigningTeacher)}
-              className="text-sm px-4 py-2 rounded-lg transition"
+              className="text-sm px-4 py-2 rounded-lg transition w-full md:w-auto shrink-0"
               style={{ border: '1px solid #38bdf8', color: '#38bdf8' }}>
               {teacher ? 'Change Teacher' : 'Assign Teacher'}
             </button>
           </div>
 
           {assigningTeacher && (
-            <div className="mt-4 pt-4 flex gap-3 items-center" style={{ borderTop: '1px solid #334155' }}>
+            <div className="mt-4 pt-4 flex flex-col sm:flex-row gap-3 sm:items-center" style={{ borderTop: '1px solid #334155' }}>
               <select value={selectedTeacher} onChange={e => setSelectedTeacher(e.target.value)}
-                className="rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle}>
+                className="rounded-lg px-4 py-2 text-sm focus:outline-none w-full sm:w-auto" style={inputStyle}>
                 <option value="">— No teacher —</option>
                 {teachers.map(t => <option key={t.id} value={t.id}>{t.full_name}</option>)}
               </select>
-              <button onClick={handleAssignTeacher} disabled={saving}
-                className="px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
-                style={{ background: '#38bdf8', color: '#0f172a' }}>
-                {saving ? 'Saving...' : 'Save'}
-              </button>
-              <button onClick={() => setAssigningTeacher(false)}
-                className="text-sm hover:underline" style={{ color: '#64748b' }}>
-                Cancel
-              </button>
+              <div className="flex gap-3 items-center">
+                <button onClick={handleAssignTeacher} disabled={saving}
+                  className="px-4 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
+                  style={{ background: '#38bdf8', color: '#0f172a' }}>
+                  {saving ? 'Saving...' : 'Save'}
+                </button>
+                <button onClick={() => setAssigningTeacher(false)}
+                  className="text-sm hover:underline" style={{ color: '#64748b' }}>
+                  Cancel
+                </button>
+              </div>
             </div>
           )}
         </div>
 
         <div className="rounded-xl overflow-hidden" style={{ background: '#1e293b', border: '1px solid #334155' }}>
-          <table className="w-full text-sm">
-            <thead>
-              <tr style={{ borderBottom: '1px solid #334155' }}>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>#</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Learner Code</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Gender</th>
-                <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Action</th>
-              </tr>
-            </thead>
-            <tbody>
-              {students.length === 0 ? (
-                <tr>
-                  <td colSpan={5} className="px-6 py-8 text-center" style={{ color: '#475569' }}>
-                    No active students in this class.
-                  </td>
+          <div className="overflow-x-auto">
+            <table className="w-full text-sm min-w-[600px]">
+              <thead>
+                <tr style={{ borderBottom: '1px solid #334155' }}>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>#</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Student</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Learner Code</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Gender</th>
+                  <th className="text-left px-6 py-3 font-medium" style={{ color: '#475569' }}>Action</th>
                 </tr>
-              ) : (
-                students.map((s, i) => (
-                  <tr key={s.id} className="transition" style={{ borderBottom: '1px solid #1e293b' }}
-                    onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
-                    onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
-                    <td className="px-6 py-4" style={{ color: '#475569' }}>{i + 1}</td>
-                    <td className="px-6 py-4 font-medium" style={{ color: '#e2e8f0' }}>{s.full_name}</td>
-                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.learner_code}</td>
-                    <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.gender}</td>
-                    <td className="px-6 py-4">
-                      <Link href={`/students/${s.id}`} className="text-sm hover:underline" style={{ color: '#38bdf8' }}>
-                        View Profile
-                      </Link>
+              </thead>
+              <tbody>
+                {students.length === 0 ? (
+                  <tr>
+                    <td colSpan={5} className="px-6 py-8 text-center" style={{ color: '#475569' }}>
+                      No active students in this class.
                     </td>
                   </tr>
-                ))
-              )}
-            </tbody>
-          </table>
+                ) : (
+                  students.map((s, i) => (
+                    <tr key={s.id} className="transition" style={{ borderBottom: '1px solid #1e293b' }}
+                      onMouseEnter={e => (e.currentTarget as HTMLElement).style.background = '#0f172a'}
+                      onMouseLeave={e => (e.currentTarget as HTMLElement).style.background = 'transparent'}>
+                      <td className="px-6 py-4" style={{ color: '#475569' }}>{i + 1}</td>
+                      <td className="px-6 py-4 font-medium" style={{ color: '#e2e8f0' }}>{s.full_name}</td>
+                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.learner_code}</td>
+                      <td className="px-6 py-4" style={{ color: '#94a3b8' }}>{s.gender}</td>
+                      <td className="px-6 py-4">
+                        <Link href={`/students/${s.id}`} className="text-sm hover:underline" style={{ color: '#38bdf8' }}>
+                          View Profile
+                        </Link>
+                      </td>
+                    </tr>
+                  ))
+                )}
+              </tbody>
+            </table>
+          </div>
         </div>
       </div>
     </div>
