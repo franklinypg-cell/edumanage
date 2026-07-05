@@ -65,23 +65,23 @@ export default function ClassesPage() {
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 flex items-center justify-center">
+      <div className="md:ml-56 flex-1 w-full flex items-center justify-center pt-14 md:pt-0">
         <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
-        <div className="flex justify-between items-center mb-6">
+      <div className="md:ml-56 flex-1 w-full p-4 md:p-8 pt-20 md:pt-8">
+        <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Classes</h2>
           <button
             onClick={() => setShowForm(!showForm)}
-            className="px-4 py-2 rounded-lg text-sm font-medium transition"
+            className="px-4 py-2 rounded-lg text-sm font-medium transition w-full sm:w-auto"
             style={{ background: '#38bdf8', color: '#0f172a' }}
           >
             + Add Class
@@ -124,7 +124,7 @@ export default function ClassesPage() {
           </form>
         )}
 
-        <div className="grid grid-cols-3 gap-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
           {classes.map(cls => (
             <Link href={`/classes/${cls.id}`} key={cls.id}>
               <div className="rounded-xl p-6 transition cursor-pointer"
@@ -132,12 +132,12 @@ export default function ClassesPage() {
                 onMouseEnter={e => (e.currentTarget as HTMLElement).style.borderColor = '#38bdf8'}
                 onMouseLeave={e => (e.currentTarget as HTMLElement).style.borderColor = '#334155'}
               >
-                <div className="flex justify-between items-start mb-4">
+                <div className="flex justify-between items-start mb-4 gap-2">
                   <div>
                     <h3 className="font-semibold text-lg" style={{ color: '#e2e8f0' }}>{cls.name}</h3>
                     <p className="text-xs" style={{ color: '#475569' }}>{cls.level}</p>
                   </div>
-                  <span className="text-xs font-medium px-2 py-1 rounded-full"
+                  <span className="text-xs font-medium px-2 py-1 rounded-full whitespace-nowrap shrink-0"
                     style={{ background: '#0f172a', color: '#38bdf8' }}>
                     {cls.student_count} students
                   </span>
