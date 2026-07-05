@@ -44,11 +44,12 @@ export default function NewStudentPage() {
     if (data) setClasses(data)
   }
 
-  const generateLearnerCode = async () => {
+  const generateLearnerCode = async (schoolId: string) => {
     const year = new Date().getFullYear()
     const { count } = await supabase
       .from('students')
       .select('*', { count: 'exact', head: true })
+      .eq('school_id', schoolId)
     const number = String((count || 0) + 1).padStart(3, '0')
     return `SCH-${year}-${number}`
   }
@@ -64,7 +65,7 @@ export default function NewStudentPage() {
       .eq('id', user?.id)
       .single()
 
-    const learner_code = await generateLearnerCode()
+    const learner_code = await generateLearnerCode(profile?.school_id)
     const { error } = await supabase.from('students').insert({
       full_name: form.full_name,
       date_of_birth: form.date_of_birth,
