@@ -643,18 +643,18 @@ export default function FeesPage() {
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   if (loading) return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen w-full" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="md:ml-56 flex-1 flex items-center justify-center pt-14 md:pt-0">
+      <div className="md:ml-56 flex-1 flex items-center justify-center pt-14 md:pt-0 min-w-0 max-w-full">
         <p style={{ color: '#475569' }}>Loading...</p>
       </div>
     </div>
   )
 
   return (
-    <div className="flex min-h-screen" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen w-full" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="md:ml-56 flex-1 p-4 md:p-8 pt-20 md:pt-8">
+      <div className="md:ml-56 flex-1 p-4 md:p-8 pt-20 md:pt-8 min-w-0 max-w-full">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
           <h2 className="text-lg font-medium" style={{ color: '#e2e8f0' }}>Fee Payments</h2>
           <div className="flex flex-wrap gap-3">
@@ -677,14 +677,14 @@ export default function FeesPage() {
         </div>
 
         {showStructureForm && (
-          <div className="rounded-xl p-6 mb-6 max-w-2xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+          <div className="rounded-xl p-4 md:p-6 mb-6 max-w-2xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
             <h3 className="text-sm font-medium mb-4" style={{ color: '#e2e8f0' }}>Fee Structure — Set Expected Fees Per Class</h3>
             <p className="text-xs mb-4" style={{ color: '#64748b' }}>
               Set the expected termly fee for each class. This is used to automatically calculate arrears (unpaid balances carried from previous terms).
             </p>
-            <form onSubmit={handleStructureSubmit} className="grid grid-cols-2 sm:grid-cols-4 gap-3 mb-4">
+            <form onSubmit={handleStructureSubmit} className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 mb-4">
               <select value={structureForm.class} onChange={e => updateStructure('class', e.target.value)}
-                className="rounded-lg px-3 py-2 text-sm focus:outline-none col-span-2 sm:col-span-1" style={inputStyle} required>
+                className="rounded-lg px-3 py-2 text-sm focus:outline-none" style={inputStyle} required>
                 <option value="">Class</option>
                 {classes.map((c, i) => (
                   <option key={i} value={c.name}>{c.name}</option>
@@ -742,9 +742,9 @@ export default function FeesPage() {
         )}
 
         {showBulkForm && (
-          <div className="rounded-xl p-6 mb-6 max-w-lg" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+          <div className="rounded-xl p-4 md:p-6 mb-6 max-w-lg" style={{ background: '#1e293b', border: '1px solid #334155' }}>
             <h3 className="text-sm font-medium mb-4" style={{ color: '#e2e8f0' }}>Bulk Print Receipts</h3>
-            <div className="grid grid-cols-2 gap-4 mb-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-4">
               <div>
                 <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Term</label>
                 <select value={bulkFilter.term}
@@ -763,7 +763,7 @@ export default function FeesPage() {
                   placeholder="2025/2026" />
               </div>
             </div>
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <button onClick={generateBulkReceipts} disabled={bulkPrinting}
                 className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
                 style={{ background: '#38bdf8', color: '#0f172a' }}>
@@ -779,7 +779,7 @@ export default function FeesPage() {
         )}
 
         {showForm && (
-          <form onSubmit={handleSubmit} className="rounded-xl p-6 mb-6 max-w-2xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
+          <form onSubmit={handleSubmit} className="rounded-xl p-4 md:p-6 mb-6 max-w-2xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
             <h3 className="text-sm font-medium mb-4" style={{ color: '#e2e8f0' }}>Record New Payment</h3>
             <div className="space-y-4">
               <div>
@@ -792,7 +792,7 @@ export default function FeesPage() {
                   required
                 />
               </div>
-              <div className="grid grid-cols-2 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Amount (GHS) <span style={{ color: '#f87171' }}>*</span></label>
                   <input type="number" value={form.amount} onChange={e => update('amount', e.target.value)}
@@ -804,7 +804,7 @@ export default function FeesPage() {
                     className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle} required />
                 </div>
               </div>
-              <div className="grid grid-cols-3 gap-4">
+              <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                 <div>
                   <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Payment Method</label>
                   <select value={form.payment_method} onChange={e => update('payment_method', e.target.value)}
@@ -869,7 +869,7 @@ export default function FeesPage() {
                 </div>
               )}
 
-              <div className="flex gap-3 pt-2">
+              <div className="flex flex-col sm:flex-row gap-3 pt-2">
                 <button type="submit" disabled={submitting}
                   className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
                   style={{ background: '#38bdf8', color: '#0f172a' }}>
