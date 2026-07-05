@@ -565,10 +565,11 @@ export default function FeesPage() {
     setShowBulkForm(false)
   }
 
-  const generateReceiptNumber = async () => {
+  const generateReceiptNumber = async (schoolId: string) => {
     const { count } = await supabase
       .from('fees')
       .select('*', { count: 'exact', head: true })
+      .eq('school_id', schoolId)
     const number = String((count || 0) + 1).padStart(4, '0')
     return `RCP-${new Date().getFullYear()}-${number}`
   }
@@ -584,7 +585,7 @@ export default function FeesPage() {
       .eq('id', user?.id)
       .single()
 
-    const receipt_number = await generateReceiptNumber()
+    const receipt_number = await generateReceiptNumber(profile?.school_id)
     const { error } = await supabase.from('fees').insert({
       ...form,
       amount: parseFloat(form.amount),
