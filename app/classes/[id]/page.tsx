@@ -60,7 +60,7 @@ export default function ClassDetailPage() {
   const inputStyle = { background: '#0f172a', border: '1.5px solid #334155', color: '#e2e8f0' }
 
   if (loading) return (
-    <div className="flex min-h-screen w-full overflow-x-hidden" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen w-full" style={{ background: '#0f172a' }}>
       <Sidebar />
       <div className="md:ml-56 flex-1 flex items-center justify-center">
         <p style={{ color: '#475569' }}>Loading...</p>
@@ -71,9 +71,9 @@ export default function ClassDetailPage() {
   const teacher = cls?.teachers
 
   return (
-    <div className="flex min-h-screen w-full overflow-x-hidden" style={{ background: '#0f172a' }}>
+    <div className="flex min-h-screen w-full" style={{ background: '#0f172a' }}>
       <Sidebar />
-      <div className="md:ml-56 flex-1 p-4 md:p-8">
+      <div className="md:ml-56 flex-1 p-4 md:p-8 min-w-0 max-w-full">
         <div className="flex flex-wrap items-center gap-3 mb-6">
           <Link href="/classes" className="text-sm" style={{ color: '#475569' }}>← Classes</Link>
           <span style={{ color: '#334155' }}>/</span>
