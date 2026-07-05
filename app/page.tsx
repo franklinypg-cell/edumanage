@@ -56,12 +56,13 @@ export default function LoginPage() {
     }
 
     try {
-      const { data: student, error: dbError } = await supabase
-        .from('students')
-        .select('id, full_name, learner_code')
-        .eq('learner_code', learnerCode.trim())
-        .eq('date_of_birth', dbFormattedDate)
-        .single()
+      const { data: studentResults, error: dbError } = await supabase
+        .rpc('parent_lookup_student', {
+          p_learner_code: learnerCode.trim(),
+          p_dob: dbFormattedDate,
+        })
+
+      const student = studentResults?.[0]
 
       if (dbError || !student) {
         setParentError('Invalid Learner Code or Date of Birth. Please check and try again.')
