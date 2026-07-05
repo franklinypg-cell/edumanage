@@ -9,7 +9,6 @@ export default function NewStudentPage() {
   const [loading, setLoading] = useState(false)
   const [success, setSuccess] = useState(false)
   const [form, setForm] = useState({
-    // Personal
     full_name: '',
     date_of_birth: '',
     gender: '',
@@ -19,12 +18,10 @@ export default function NewStudentPage() {
     religion: '',
     blood_group: '',
     medical_conditions: '',
-    // Guardian
     guardian_name: '',
     guardian_phone: '',
     guardian_phone_2: '',
     guardian_relationship: '',
-    // Additional
     previous_school: '',
     boarding_status: '',
     class_teacher: '',
@@ -100,27 +97,24 @@ export default function NewStudentPage() {
     return acc
   }, {})
 
-  const inputStyle = {
-    background: '#ffffff',
-    border: '1.5px solid #c7d2fe',
-    color: '#1e293b',
-  }
+  const inputClass =
+    "w-full rounded-lg px-4 py-2 text-sm bg-slate-800 border border-slate-700 text-slate-100 placeholder-slate-500 focus:outline-none focus:border-sky-500 focus:ring-1 focus:ring-sky-500"
 
   const sectionLabel = (title: string) => (
-    <h3 className="text-xs font-semibold uppercase tracking-wider pb-2 mb-1 border-b" style={{ color: '#4f46e5', borderColor: '#e0e7ff' }}>
+    <h3 className="text-xs font-semibold uppercase tracking-wider pb-2 mb-1 border-b border-slate-700 text-sky-400">
       {title}
     </h3>
   )
 
   if (success) return (
-    <div className="flex min-h-screen bg-indigo-50/40">
+    <div className="flex min-h-screen bg-slate-900 w-full overflow-x-hidden">
       <Sidebar />
-      <div className="ml-56 flex-1 flex items-center justify-center">
-        <div className="rounded-xl p-8 text-center max-w-md w-full bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
-          <div className="text-4xl mb-4" style={{ color: '#16a34a' }}>✓</div>
-          <h2 className="text-xl font-semibold mb-2" style={{ color: '#1e1b4b' }}>Student Enrolled</h2>
-          <p className="text-sm mb-6" style={{ color: '#64748b' }}>The student has been successfully added to the system.</p>
-          <div className="flex gap-3 justify-center">
+      <div className="md:ml-56 flex-1 flex items-center justify-center p-4">
+        <div className="rounded-xl p-8 text-center max-w-md w-full bg-slate-800 border border-slate-700 shadow-sm">
+          <div className="text-4xl mb-4 text-green-400">✓</div>
+          <h2 className="text-xl font-semibold mb-2 text-slate-100">Student Enrolled</h2>
+          <p className="text-sm mb-6 text-slate-400">The student has been successfully added to the system.</p>
+          <div className="flex flex-col sm:flex-row gap-3 justify-center">
             <button
               onClick={() => {
                 setSuccess(false)
@@ -132,14 +126,12 @@ export default function NewStudentPage() {
                   boarding_status: '', class_teacher: '',
                 })
               }}
-              className="px-4 py-2 rounded-lg text-sm font-medium transition"
-              style={{ background: '#4f46e5', color: '#ffffff' }}
+              className="px-4 py-2 rounded-lg text-sm font-medium transition bg-sky-500 text-white hover:bg-sky-400"
             >
               Add Another
             </button>
             <Link href="/students"
-              className="px-4 py-2 rounded-lg text-sm font-medium transition"
-              style={{ border: '1px solid #c7d2fe', color: '#4f46e5' }}
+              className="px-4 py-2 rounded-lg text-sm font-medium transition border border-slate-600 text-sky-400 hover:bg-slate-700"
             >
               View All Students
             </Link>
@@ -150,51 +142,48 @@ export default function NewStudentPage() {
   )
 
   return (
-    <div className="flex min-h-screen bg-indigo-50/40">
+    <div className="flex min-h-screen bg-slate-900 w-full overflow-x-hidden">
       <Sidebar />
-      <div className="ml-56 flex-1 p-8">
-        <Link href="/students" className="text-sm mb-6 block" style={{ color: '#4f46e5' }}>
+      <div className="md:ml-56 flex-1 p-4 md:p-8">
+        <Link href="/students" className="text-sm mb-6 block text-sky-400 hover:text-sky-300">
           ← Back to Students
         </Link>
-        <h2 className="text-lg font-medium mb-6" style={{ color: '#1e1b4b' }}>Enrol New Student</h2>
+        <h2 className="text-lg font-medium mb-6 text-slate-100">Enrol New Student</h2>
 
-        <form onSubmit={handleSubmit} className="rounded-xl p-6 space-y-8 max-w-3xl bg-white shadow-sm" style={{ border: '1px solid #e0e7ff' }}>
+        <form onSubmit={handleSubmit} className="rounded-xl p-4 md:p-6 space-y-8 max-w-3xl bg-slate-800 border border-slate-700 shadow-sm">
 
           {sectionLabel('Personal Information')}
           <div className="space-y-4">
 
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Full Name <span style={{ color: '#dc2626' }}>*</span></label>
+              <label className="text-sm block mb-1 text-slate-400">Full Name <span className="text-red-400">*</span></label>
               <input
                 type="text"
                 value={form.full_name}
                 onChange={e => update('full_name', e.target.value)}
-                className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                style={inputStyle}
+                className={inputClass}
                 placeholder="Enter full name"
                 required
               />
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Date of Birth <span style={{ color: '#dc2626' }}>*</span></label>
+                <label className="text-sm block mb-1 text-slate-400">Date of Birth <span className="text-red-400">*</span></label>
                 <input
                   type="date"
                   value={form.date_of_birth}
                   onChange={e => update('date_of_birth', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   required
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Gender <span style={{ color: '#dc2626' }}>*</span></label>
+                <label className="text-sm block mb-1 text-slate-400">Gender <span className="text-red-400">*</span></label>
                 <select
                   value={form.gender}
                   onChange={e => update('gender', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   required
                 >
                   <option value="">Select gender</option>
@@ -204,39 +193,36 @@ export default function NewStudentPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Nationality</label>
+                <label className="text-sm block mb-1 text-slate-400">Nationality</label>
                 <input
                   type="text"
                   value={form.nationality}
                   onChange={e => update('nationality', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   placeholder="e.g. Ghanaian"
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Hometown</label>
+                <label className="text-sm block mb-1 text-slate-400">Hometown</label>
                 <input
                   type="text"
                   value={form.hometown}
                   onChange={e => update('hometown', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   placeholder="e.g. Drobo"
                 />
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Religion</label>
+                <label className="text-sm block mb-1 text-slate-400">Religion</label>
                 <select
                   value={form.religion}
                   onChange={e => update('religion', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                 >
                   <option value="">Select religion</option>
                   <option value="Christian">Christian</option>
@@ -246,12 +232,11 @@ export default function NewStudentPage() {
                 </select>
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Blood Group</label>
+                <label className="text-sm block mb-1 text-slate-400">Blood Group</label>
                 <select
                   value={form.blood_group}
                   onChange={e => update('blood_group', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                 >
                   <option value="">Select blood group</option>
                   {['A+', 'A-', 'B+', 'B-', 'AB+', 'AB-', 'O+', 'O-'].map(bg => (
@@ -262,13 +247,12 @@ export default function NewStudentPage() {
             </div>
 
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Medical Conditions</label>
+              <label className="text-sm block mb-1 text-slate-400">Medical Conditions</label>
               <input
                 type="text"
                 value={form.medical_conditions}
                 onChange={e => update('medical_conditions', e.target.value)}
-                className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                style={inputStyle}
+                className={inputClass}
                 placeholder="e.g. Asthma, None"
               />
             </div>
@@ -277,12 +261,11 @@ export default function NewStudentPage() {
           {sectionLabel('School Details')}
           <div className="space-y-4">
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Class <span style={{ color: '#dc2626' }}>*</span></label>
+              <label className="text-sm block mb-1 text-slate-400">Class <span className="text-red-400">*</span></label>
               <select
                 value={form.class}
                 onChange={e => update('class', e.target.value)}
-                className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                style={inputStyle}
+                className={inputClass}
                 required
               >
                 <option value="">Select class</option>
@@ -296,25 +279,23 @@ export default function NewStudentPage() {
               </select>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Class Teacher</label>
+                <label className="text-sm block mb-1 text-slate-400">Class Teacher</label>
                 <input
                   type="text"
                   value={form.class_teacher}
                   onChange={e => update('class_teacher', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   placeholder="e.g. Mr. Osei"
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Boarding Status</label>
+                <label className="text-sm block mb-1 text-slate-400">Boarding Status</label>
                 <select
                   value={form.boarding_status}
                   onChange={e => update('boarding_status', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                 >
                   <option value="">Select status</option>
                   <option value="Day">Day</option>
@@ -324,13 +305,12 @@ export default function NewStudentPage() {
             </div>
 
             <div>
-              <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Previous School</label>
+              <label className="text-sm block mb-1 text-slate-400">Previous School</label>
               <input
                 type="text"
                 value={form.previous_school}
                 onChange={e => update('previous_school', e.target.value)}
-                className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                style={inputStyle}
+                className={inputClass}
                 placeholder="e.g. Drobo Anglican Primary"
               />
             </div>
@@ -339,26 +319,24 @@ export default function NewStudentPage() {
           {sectionLabel('Guardian / Parent Details')}
           <div className="space-y-4">
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Guardian Name <span style={{ color: '#dc2626' }}>*</span></label>
+                <label className="text-sm block mb-1 text-slate-400">Guardian Name <span className="text-red-400">*</span></label>
                 <input
                   type="text"
                   value={form.guardian_name}
                   onChange={e => update('guardian_name', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   placeholder="Enter guardian name"
                   required
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Relationship</label>
+                <label className="text-sm block mb-1 text-slate-400">Relationship</label>
                 <select
                   value={form.guardian_relationship}
                   onChange={e => update('guardian_relationship', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                 >
                   <option value="">Select relationship</option>
                   <option value="Father">Father</option>
@@ -372,45 +350,41 @@ export default function NewStudentPage() {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Primary Phone <span style={{ color: '#dc2626' }}>*</span></label>
+                <label className="text-sm block mb-1 text-slate-400">Primary Phone <span className="text-red-400">*</span></label>
                 <input
                   type="tel"
                   value={form.guardian_phone}
                   onChange={e => update('guardian_phone', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   placeholder="e.g. 0244000000"
                   required
                 />
               </div>
               <div>
-                <label className="text-sm block mb-1" style={{ color: '#64748b' }}>Secondary Phone</label>
+                <label className="text-sm block mb-1 text-slate-400">Secondary Phone</label>
                 <input
                   type="tel"
                   value={form.guardian_phone_2}
                   onChange={e => update('guardian_phone_2', e.target.value)}
-                  className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none"
-                  style={inputStyle}
+                  className={inputClass}
                   placeholder="e.g. 0554000000"
                 />
               </div>
             </div>
           </div>
 
-          <div className="flex gap-3 pt-2">
+          <div className="flex flex-col sm:flex-row gap-3 pt-2">
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50"
-              style={{ background: '#4f46e5', color: '#ffffff' }}
+              className="px-6 py-2 rounded-lg text-sm font-medium transition disabled:opacity-50 bg-sky-500 text-white hover:bg-sky-400"
             >
               {loading ? 'Enrolling...' : 'Enrol Student'}
             </button>
             <Link href="/students"
-              className="px-6 py-2 rounded-lg text-sm font-medium transition"
-              style={{ border: '1px solid #c7d2fe', color: '#4f46e5' }}
+              className="px-6 py-2 rounded-lg text-sm font-medium transition border border-slate-600 text-sky-400 hover:bg-slate-700 text-center"
             >
               Cancel
             </Link>
