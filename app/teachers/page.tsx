@@ -34,7 +34,14 @@ export default function TeachersPage() {
     if (editId) {
       await supabase.from('teachers').update(form).eq('id', editId)
     } else {
-      await supabase.from('teachers').insert(form)
+      const { data: { user } } = await supabase.auth.getUser()
+      const { data: profile } = await supabase
+        .from('profiles')
+        .select('school_id')
+        .eq('id', user?.id)
+        .single()
+
+      await supabase.from('teachers').insert({ ...form, school_id: profile?.school_id })
     }
     setShowForm(false)
     setEditId(null)

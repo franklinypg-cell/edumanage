@@ -182,12 +182,21 @@ export default function FeesPage() {
 
   const handleStructureSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
+
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('school_id')
+      .eq('id', user?.id)
+      .single()
+
     const { error } = await supabase.from('fee_structure').upsert({
       class: structureForm.class,
       term: structureForm.term,
       academic_year: structureForm.academic_year,
       amount: parseFloat(structureForm.amount),
-    }, { onConflict: 'class,term,academic_year' })
+      school_id: profile?.school_id,
+    }, { onConflict: 'class,term,academic_year,school_id' })
 
     if (error) {
       alert('Error saving fee structure. Please try again.')
@@ -567,6 +576,14 @@ export default function FeesPage() {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
     setSubmitting(true)
+
+    const { data: { user } } = await supabase.auth.getUser()
+    const { data: profile } = await supabase
+      .from('profiles')
+      .select('school_id')
+      .eq('id', user?.id)
+      .single()
+
     const receipt_number = await generateReceiptNumber()
     const { error } = await supabase.from('fees').insert({
       ...form,
@@ -575,6 +592,7 @@ export default function FeesPage() {
       term_fee_expected: termFeeExpected,
       balance: balancePreview,
       receipt_number,
+      school_id: profile?.school_id,
     })
     if (error) {
       alert('Error recording payment. Please try again.')
