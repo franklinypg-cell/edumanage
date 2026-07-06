@@ -3,13 +3,14 @@ import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import AdminSidebar from '../components/admin/AdminSidebar'
 import UsageStats from '../components/admin/UsageStats'
+import BillingStatus from '../components/admin/BillingStatus'
 
 type School = {
   id: string
   name: string
   status: string
-  contact_phone?: string
-  contact_email?: string
+  phone?: string
+  email?: string
   created_at: string
 }
 
@@ -28,9 +29,11 @@ export default function SuperAdminPage() {
   const [loading, setLoading] = useState(true)
   const [savingSchool, setSavingSchool] = useState(false)
   const [showAddSchool, setShowAddSchool] = useState(false)
-  const [newSchool, setNewSchool] = useState({ name: '', contact_phone: '', contact_email: '' })
+  const [newSchool, setNewSchool] = useState({ name: '', phone: '', email: '' })
   const [assigningProfileId, setAssigningProfileId] = useState<string | null>(null)
   const [assignSchoolValue, setAssignSchoolValue] = useState('')
+  const [refreshKey, setRefreshKey] = useState(0)
+  const [generatedLogin, setGeneratedLogin] = useState<{ email: string; password: string } | null>(null)
 
   useEffect(() => {
     const checkAccess = async () => {
@@ -78,19 +81,56 @@ export default function SuperAdminPage() {
   const handleAddSchool = async (e: React.FormEvent) => {
     e.preventDefault()
     setSavingSchool(true)
-    const { error } = await supabase.from('schools').insert({
-      name: newSchool.name,
-      contact_phone: newSchool.contact_phone || null,
-      contact_email: newSchool.contact_email || null,
-      status: 'active',
-    })
-    if (error) {
-      alert('Error adding school: ' + error.message)
-    } else {
-      setNewSchool({ name: '', contact_phone: '', contact_email: '' })
-      setShowAddSchool(false)
-      fetchSchools()
+
+    const { data: createdSchool, error } = await supabase
+      .from('schools')
+      .insert({
+        name: newSchool.name,
+        phone: newSchool.phone || null,
+        email: newSchool.email || null,
+        status: 'active',
+      })
+      .select()
+      .single()
+
+    if (error || !createdSchool) {
+      alert('Error adding school: ' + (error?.message || 'Unknown error'))
+      setSavingSchool(false)
+      return
     }
+
+    // If an admin email was given, auto-create their login via the
+    // server-side API route (uses the service role key — never runs
+    // in the browser) and show the generated password once.
+    if (newSchool.email) {
+      try {
+        const res = await fetch('/api/create-school-login', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ email: newSchool.email, schoolId: createdSchool.id }),
+        })
+        const result = await res.json()
+        if (res.ok) {
+          setGeneratedLogin({ email: newSchool.email, password: result.password })
+        } else {
+          alert(
+            'School created, but login setup failed: ' +
+              result.error +
+              '\nYou can still create it manually in Supabase → Authentication.'
+          )
+        }
+      } catch {
+        alert(
+          'School created, but login setup failed. You can still create it manually in Supabase → Authentication.'
+        )
+      }
+    }
+
+    setNewSchool({ name: '', phone: '', email: '' })
+    setShowAddSchool(false)
+    fetchSchools()
+    fetchProfiles()
+    setRefreshKey(k => k + 1)
     setSavingSchool(false)
   }
 
@@ -107,6 +147,7 @@ export default function SuperAdminPage() {
       alert('Error updating school status: ' + error.message)
     } else {
       fetchSchools()
+      setRefreshKey(k => k + 1)
     }
   }
 
@@ -164,6 +205,22 @@ export default function SuperAdminPage() {
           </button>
         </div>
 
+        {generatedLogin && (
+          <div className="rounded-xl p-4 md:p-5 mb-6 max-w-xl" style={{ background: '#052e16', border: '1px solid #16a34a' }}>
+            <p className="text-sm font-medium" style={{ color: '#4ade80' }}>Login created ✅</p>
+            <div className="mt-2 text-xs space-y-1" style={{ color: '#e2e8f0' }}>
+              <p>Email: <span className="font-mono">{generatedLogin.email}</span></p>
+              <p>Password: <span className="font-mono font-semibold">{generatedLogin.password}</span></p>
+            </div>
+            <p className="text-xs mt-2" style={{ color: '#94a3b8' }}>
+              Copy this now — Supabase won't show it again. Share it with the school securely (e.g. WhatsApp), then ask them to change it after first login.
+            </p>
+            <button onClick={() => setGeneratedLogin(null)} className="text-xs mt-2 hover:underline" style={{ color: '#64748b' }}>
+              Dismiss
+            </button>
+          </div>
+        )}
+
         {showAddSchool && (
           <form onSubmit={handleAddSchool} className="rounded-xl p-4 md:p-6 mb-6 max-w-xl" style={{ background: '#1e293b', border: '1px solid #334155' }}>
             <h3 className="text-sm font-medium mb-4" style={{ color: '#e2e8f0' }}>New School</h3>
@@ -178,17 +235,20 @@ export default function SuperAdminPage() {
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
                   <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Contact Phone</label>
-                  <input type="text" value={newSchool.contact_phone}
-                    onChange={e => setNewSchool(p => ({ ...p, contact_phone: e.target.value }))}
+                  <input type="text" value={newSchool.phone}
+                    onChange={e => setNewSchool(p => ({ ...p, phone: e.target.value }))}
                     className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle}
                     placeholder="e.g. 0244000000" />
                 </div>
                 <div>
                   <label className="text-sm block mb-1" style={{ color: '#94a3b8' }}>Contact Email</label>
-                  <input type="email" value={newSchool.contact_email}
-                    onChange={e => setNewSchool(p => ({ ...p, contact_email: e.target.value }))}
+                  <input type="email" value={newSchool.email}
+                    onChange={e => setNewSchool(p => ({ ...p, email: e.target.value }))}
                     className="w-full rounded-lg px-4 py-2 text-sm focus:outline-none" style={inputStyle}
                     placeholder="e.g. admin@school.com" />
+                  <p className="text-xs mt-1" style={{ color: '#64748b' }}>
+                    If provided, a login will be auto-created with this email — a password is generated automatically.
+                  </p>
                 </div>
               </div>
               <div className="flex flex-col sm:flex-row gap-3 pt-2">
@@ -207,7 +267,9 @@ export default function SuperAdminPage() {
           </form>
         )}
 
-        <UsageStats />
+        <UsageStats refreshKey={refreshKey} />
+
+        <BillingStatus refreshKey={refreshKey} />
 
         <div className="rounded-xl overflow-hidden mb-8" style={{ background: '#1e293b', border: '1px solid #334155' }}>
           <div className="px-4 md:px-6 py-3" style={{ borderBottom: '1px solid #334155' }}>
@@ -242,7 +304,7 @@ export default function SuperAdminPage() {
                         </span>
                       </td>
                       <td className="px-4 md:px-6 py-4 text-xs" style={{ color: '#94a3b8' }}>
-                        {school.contact_phone || school.contact_email || '—'}
+                        {school.phone || school.email || '—'}
                       </td>
                       <td className="px-4 md:px-6 py-4">
                         <button onClick={() => toggleSchoolStatus(school)}

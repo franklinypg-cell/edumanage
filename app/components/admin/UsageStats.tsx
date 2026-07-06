@@ -35,7 +35,7 @@ function relativeTime(iso: string | null) {
   return `${months}mo ago`
 }
 
-export default function UsageStats() {
+export default function UsageStats({ refreshKey }: { refreshKey?: number }) {
   const [loading, setLoading] = useState(true)
   const [schools, setSchools] = useState<School[]>([])
   const [usage, setUsage] = useState<SchoolUsage[]>([])
@@ -45,7 +45,7 @@ export default function UsageStats() {
 
   useEffect(() => {
     loadUsage()
-  }, [])
+  }, [refreshKey])
 
   const loadUsage = async () => {
     setLoading(true)
