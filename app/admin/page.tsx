@@ -2,6 +2,7 @@
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
 import Sidebar from '../components/sidebar'
+import UsageStats from '../../components/admin/UsageStats'
 
 type School = {
   id: string
@@ -205,6 +206,8 @@ export default function SuperAdminPage() {
             </div>
           </form>
         )}
+
+        <UsageStats />
 
         <div className="rounded-xl overflow-hidden mb-8" style={{ background: '#1e293b', border: '1px solid #334155' }}>
           <div className="px-4 md:px-6 py-3" style={{ borderBottom: '1px solid #334155' }}>
