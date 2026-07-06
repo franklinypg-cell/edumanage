@@ -1,8 +1,8 @@
 'use client'
 import { useEffect, useState } from 'react'
 import { supabase } from '../lib/supabase'
-import Sidebar from '../components/sidebar'
-import UsageStats from '../../components/admin/UsageStats'
+import AdminSidebar from '../components/admin/AdminSidebar'
+import UsageStats from '../components/admin/UsageStats'
 
 type School = {
   id: string
@@ -148,7 +148,7 @@ export default function SuperAdminPage() {
 
   return (
     <div className="flex w-full min-h-screen overflow-x-hidden" style={{ background: '#0f172a' }}>
-      <Sidebar />
+      <AdminSidebar />
       <div className="md:ml-56 flex-1 w-full p-4 md:p-8 pt-20 md:pt-8 min-w-0 max-w-full">
         <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-3 mb-6">
           <div>

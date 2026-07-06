@@ -1,6 +1,6 @@
 'use client'
 import { useEffect, useState, useMemo } from 'react'
-import { supabase } from '../lib/supabase'
+import { supabase } from '../../lib/supabase'
 
 type School = {
   id: string
@@ -70,13 +70,11 @@ export default function UsageStats() {
       }
     }
 
-    const [students, teacherProfiles, classes] = await Promise.all([
+    const [students, teachers, classes] = await Promise.all([
       safeFetch('students', 'school_id, created_at'),
-      safeFetch('profiles', 'school_id, role, created_at'), // filtered client-side below
-      safeFetch('classes', 'school_id, created_at'),
+      safeFetch('teachers', 'school_id, created_at'),
+      safeFetch('classes', 'school_id'),
     ])
-
-    const teachers = (teacherProfiles as any[]).filter(p => p.role === 'teacher')
 
     const countAndLatestBySchool = (rows: any[]) => {
       const map = new Map<string, { count: number; latest: string | null }>()

@@ -33,10 +33,33 @@ export default function LoginPage() {
     e.preventDefault()
     setAdminLoading(true)
     setAdminError('')
-    const { error } = await supabase.auth.signInWithPassword({ email, password })
-    if (error) {
+
+    const { data: authData, error } = await supabase.auth.signInWithPassword({ email, password })
+
+    if (error || !authData.user) {
       setAdminError('Invalid email or password')
       setAdminLoading(false)
+      return
+    }
+
+    // Check role to decide where this login should land.
+    // Super admins go to the platform-wide /admin dashboard;
+    // everyone else goes to their school's /dashboard as before.
+    const { data: profile, error: profileError } = await supabase
+      .from('profiles')
+      .select('role')
+      .eq('id', authData.user.id)
+      .single()
+
+    if (profileError) {
+      // Fall back to the normal dashboard if the role lookup fails,
+      // rather than leaving the user stuck on a loading state.
+      window.location.href = '/dashboard'
+      return
+    }
+
+    if (profile?.role === 'super_admin') {
+      window.location.href = '/admin'
     } else {
       window.location.href = '/dashboard'
     }
